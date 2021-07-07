@@ -9,4 +9,5 @@ class Donation(models.Model):
     package = models.ForeignKey(to=Package, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     amount = models.DecimalField(max_digits=20, decimal_places=2, null=True)
+    currency = models.CharField(max_length=3, default='USD', null=False, blank=True)
     pass
