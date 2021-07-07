@@ -15,4 +15,5 @@ class PaymentMethod(models.Model):
 	provider = models.CharField(max_length=15, choices=PaymentProvider.choices, default=PaymentProvider.STRIPE)
 	secret_key = models.CharField(max_length=150, null=False, default=None)
 	client_key = models.CharField(max_length=150, null=False, default=None)
+	environment = models.CharField(max_length=4, null=False, blank=True, default=PaymentEnvironment.DEVELOPMENT, choices=PaymentEnvironment.choices, help_text='Required for PayPal')
 	pass
