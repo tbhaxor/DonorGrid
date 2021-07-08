@@ -16,4 +16,12 @@ class PaymentMethod(models.Model):
 	secret_key = models.CharField(max_length=150, null=False, default=None)
 	client_key = models.CharField(max_length=150, null=False, default=None)
 	environment = models.CharField(max_length=4, null=False, blank=True, default=PaymentEnvironment.DEVELOPMENT, choices=PaymentEnvironment.choices, help_text='Required for PayPal')
+	# TODO: add intuitive help message
+	is_active = models.BooleanField(default=False, null=False, blank=True, help_text='Custom message', verbose_name='Mark as Active')
+
+	def __str__(self):
+		return 'PaymentMethod %d : %s' % (self.id, self.provider)
+
+	def __repr__(self):
+		return self.__str__()
 	pass
