@@ -18,6 +18,7 @@ class PaymentMethod(models.Model):
 	environment = models.CharField(max_length=4, null=False, blank=True, default=PaymentEnvironment.DEVELOPMENT, choices=PaymentEnvironment.choices, help_text='Required for PayPal')
 	# TODO: add intuitive help message
 	is_active = models.BooleanField(default=False, null=False, blank=True, help_text='Custom message', verbose_name='Mark as Active')
+	wh_id = models.CharField(max_length=50, null=True, blank=True)
 
 	def __str__(self):
 		return 'PaymentMethod %d : %s' % (self.id, self.provider)
