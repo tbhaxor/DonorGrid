@@ -18,6 +18,7 @@ class Package(models.Model):
     recurring_interval = models.CharField(max_length=10, default=None, blank=True, choices=RecurringInterval.choices, help_text='Set this if you want to make this package recurring')
     currency = models.CharField(max_length=4, default='USD', null=False, blank=True,
                                 help_text=format_html("List of supported currencies can be found <a href='https://developer.paypal.com/docs/api/reference/currency-codes/'  target='_blank'>here.</a>"))
+    is_hidden = models.BooleanField(default=False, null=False, help_text='Whether to show this package or not', verbose_name='Mark as Hidden')
 
     def __str__(self):
         return self.name
