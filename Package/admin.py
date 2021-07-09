@@ -21,12 +21,12 @@ class PackageForm(ModelForm):
 class PackageModel(admin.ModelAdmin):
     form = PackageForm
     empty_value_display = 'N/A'
-    list_display = ['name', 'amount', 'currency', 'recurring_unit', 'recurring_interval']
+    list_display = ['name', 'amount', 'currency', 'is_hidden', 'recurring_unit', 'recurring_interval']
 
     fieldsets = (
         ('Package Details', {
             'description': 'Set name and description for the package',
-            'fields': ('name', 'description',)
+            'fields': ('name', 'description', 'is_hidden')
         }),
         ('Amount Details', {
             'description': 'Set package amount and currency',
