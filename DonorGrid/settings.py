@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -130,3 +132,10 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Setup base url of the website
+BASE_URL = os.environ.get('BASE_URL', 'http://localhost:8000')
+
+# Setup exposing devserver using ngrok
+DEV_SERVER = len(sys.argv) > 1 and sys.argv[1] == 'runserver'
+USE_NGROK = os.environ.get('USE_NGROK') in ['True', 'true', '1', 'yes']
