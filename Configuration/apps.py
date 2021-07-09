@@ -1,4 +1,7 @@
+from django.conf import settings
 from django.apps import AppConfig
+from urllib.parse import urlparse
+import sys
 
 
 class ConfigurationConfig(AppConfig):

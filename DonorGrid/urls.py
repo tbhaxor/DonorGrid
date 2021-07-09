@@ -20,5 +20,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('packages/', include('Package.urls', namespace='package')),
     path('configurations/', include('Configuration.urls', namespace='configuration')),
-    path('donations/', include('Donation.urls', namespace='donation'))
+    path('donations/', include('Donation.urls', namespace='donation')),
+    path('webhooks/', include('Webhook.urls', namespace='webhook'))
 ]
