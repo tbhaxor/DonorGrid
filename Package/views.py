@@ -7,7 +7,7 @@ from .models import Package
 class AllView(View):
 
     def get(self, request: HttpRequest):
-        packages = Package.objects.all().values()
+        packages = Package.objects.exclude(is_hidden=True).values()
         return JsonResponse(data=list(packages), safe=False)
     pass
 
