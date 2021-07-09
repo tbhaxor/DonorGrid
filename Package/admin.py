@@ -38,4 +38,9 @@ class PackageModel(admin.ModelAdmin):
             'fields': ('recurring_unit', 'recurring_interval')
         })
     )
+
+    def save_model(self, request, obj, form, change):
+        if change and not obj.recurring_interval:
+            obj.recurring_unit = None
+        return super(PackageModel, self).save_model(request, obj, form, change)
     pass
