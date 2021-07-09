@@ -7,6 +7,8 @@ class PackageForm(ModelForm):
     def clean(self):
         ri = self.cleaned_data.get('recurring_interval')
         ru = self.cleaned_data.get('recurring_unit')
+        if ri:
+            return self.add_error('recurring_interval', 'Recurring packages are not supported yet')
         if ri and ru is None:
             self.add_error('recurring_unit', 'The field is required')
         elif ri == 'year' and ru > 1:
