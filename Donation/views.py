@@ -1,6 +1,6 @@
 from django.http import JsonResponse, HttpRequest, HttpResponseNotFound, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
-from .models import Donor, Donation, Package
+from .models import Donor, Donation, Package, PaymentMethod
 
 
 @csrf_exempt
@@ -8,6 +8,13 @@ def create_donation(request: HttpRequest):
     if request.POST.get('package', None) is None and float(request.POST.get('amount', 0)) <= 0:
         return HttpResponseForbidden('amount or package id is required')
     package = Package.objects.filter(id=request.POST.get('package', -1)).first()
+
+    if not request.POST.get('gateway', '').isdigit():
+        return HttpResponseForbidden('valid gateway id is required')
+
+    payment_method = PaymentMethod.objects.filter(id=int(request.POST['gateway'])).first()
+    if payment_method is None:
+        return HttpResponseNotFound('gateway not found')
 
     if package is None and float(request.POST.get('amount', 0)) <= 0:
         return HttpResponseNotFound('package %s not found' % request.POST['package'])
