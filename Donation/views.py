@@ -100,6 +100,7 @@ def create_donation(request: HttpRequest):
         try:
             rz_token = request.POST.get('token', None)
             if rz_token is None:
+                donation.delete()
                 return JsonResponse(data={'success': False, 'message': 'Payment method token required'})
 
             stripe_payment = PaymentIntent.create(api_key=payment_method.secret_key,
@@ -132,10 +133,12 @@ def create_donation(request: HttpRequest):
         try:
             rz_token = request.POST.get('token', None)
             if rz_token is None:
+                donation.delete()
                 return JsonResponse(data={'success': False, 'message': 'Payment method token required'})
             client: RZPayment = Client(auth=(payment_method.client_key, payment_method.secret_key)).payment
             rz_payment: dict = client.fetch(rz_token)
             if rz_payment.get('status') != 'authorized':
+                donation.delete()
                 return JsonResponse(data={'success': False, 'message': 'Unprocessable payment token passed'})
 
             client.capture(rz_token, rz_payment.get('amount'), {'currency': rz_payment.get('currency')})
