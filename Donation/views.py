@@ -119,8 +119,6 @@ def create_donation(request: HttpRequest):
             donation.save()
 
             if 'next_action' in stripe_payment and stripe_payment['next_action'] is not None:
-                print("next action")
-                print(stripe_payment['next_action'])
                 redirect_url = stripe_payment['next_action']['redirect_to_url']['url']
                 return HttpResponsePermanentRedirect(redirect_to=redirect_url)
             else:
