@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'corsheaders',
     'django_extensions',
     'Configuration.apps.ConfigurationConfig',
     'Package.apps.PackageConfig',
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -55,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsPostCsrfMiddleware',
 ]
 
 ROOT_URLCONF = 'DonorGrid.urls'
@@ -139,3 +142,8 @@ BASE_URL = os.environ.get('BASE_URL', 'http://localhost:8000')
 # Setup exposing devserver using ngrok
 DEV_SERVER = len(sys.argv) > 1 and sys.argv[1] == 'runserver'
 USE_NGROK = os.environ.get('USE_NGROK') in ['True', 'true', '1', 'yes']
+
+# CORS configuration
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_METHODS = ['GET', 'POST', 'OPTIONS']
+CORS_ALLOW_CREDENTIALS = True

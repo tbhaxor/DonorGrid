@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import AllPaymentMethods
+from .views import get_active_payment_methods
 
 app_name = 'configurations'
 urlpatterns = [
-    path('payment-methods/', AllPaymentMethods.as_view(), name='payment_methods')
+    path('payment-methods/', get_active_payment_methods, name='payment_methods')
 ]

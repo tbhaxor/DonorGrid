@@ -1,9 +1,8 @@
 from django.urls import path
-from .views import AllView, SingleView
+from .views import get_all
 
 app_name = 'package'
 
 urlpatterns = [
-    path('', AllView.as_view(), name='all'),
-    path('<int:pk>', SingleView.as_view(), name='single'),
+    path('', get_all, name='all'),
 ]
