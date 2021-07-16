@@ -25,5 +25,6 @@ urlpatterns = [
     path('packages/', include('Package.urls', namespace='package')),
     path('configurations/', include('Configuration.urls', namespace='configuration')),
     path('donations/', include('Donation.urls', namespace='donation')),
-    path('webhooks/', include('Webhook.urls', namespace='webhook'))
+    path('webhooks/', include('Webhook.urls', namespace='webhook')),
+    path('callbacks/', include('Callback.urls', namespace='callback'))
 ]
