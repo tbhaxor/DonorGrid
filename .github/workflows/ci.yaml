@@ -1,0 +1,54 @@
+name: Unit Testing
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  testing:
+    name: Python v${{ matrix.python }} - OS ${{ matrix.os.name }}
+    runs-on: ${{ matrix.os.id }}
+    strategy:
+      matrix:
+        python: [3.5, 3.6, 3.7, 3.8, 3.9]
+        os:
+          - name: Ubuntu Focal
+            id: ubuntu-20.04
+          - name: Ubuntu Bionic
+            id: ubuntu-18.04
+          - name: Windows 2019
+            id: windows-2019
+          - name: Windows 2016
+            id: windows-2016
+      max-parallel: 8
+    steps:
+      - uses: actions/checkout@v2
+        name: Clone repository
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+        name: Install python
+
+      - uses: actions/cache@v2
+        if: startsWith(runner.os, 'Linux')
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - uses: actions/cache@v2
+        if: startsWith(runner.os, 'Windows')
+        with:
+          path: ~\AppData\Local\pip\Cache
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - run: pip install -r requirements.txt
+        name: Install pip requirements
+      - run: python manage.py check
+        name: Check django application
+      - run: python -m coverage  run  --source='.' manage.py test
+        name: Perform unit tests
+      - run: python -m coverage report
+        name: Generate converage report
