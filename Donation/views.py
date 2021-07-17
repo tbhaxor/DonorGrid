@@ -34,7 +34,7 @@ def create_donation(request: HttpRequest):
         'phone_number': request.POST.get('phone_number', None)
     })[0]
 
-    donation = Donation(donor=donor, package=package)
+    donation = Donation(donor=donor, package=package, on_behalf_of=request.POST.get('on_behalf_of', ''), note=request.POST.get('note', ''))
     if package is None:
         donation.currency = request.POST.get('currency', 'USD')
         donation.amount = float(request.POST['amount'])
