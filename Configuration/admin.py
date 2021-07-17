@@ -83,7 +83,6 @@ class PaymentMethodRegister(admin.ModelAdmin):
                 'url': urljoin(settings.BASE_URL, 'webhooks/paypal').replace('http://', 'https://')
             })
             if not wh.create():
-                print(wh.error)
                 raise ValueError('Webhook creation failed')
             obj.wh_id = wh.to_dict().get('id')
         elif obj.provider == 'stripe' and not obj.wh_id and os.getenv('CI') is not None:
