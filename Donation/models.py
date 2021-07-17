@@ -14,4 +14,6 @@ class Donation(models.Model):
     txn_id = models.CharField(max_length=255, null=True, blank=False)
     provider = models.CharField(max_length=15, choices=PaymentMethod.PaymentProvider.choices, default=PaymentMethod.PaymentProvider.STRIPE)
     is_completed = models.BooleanField(default=False, null=False, blank=True)
+    on_behalf_of = models.CharField(max_length=256, null=True, default='', blank=True)
+    note = models.CharField(max_length=1024, null=True, default='', blank=True)
     pass
