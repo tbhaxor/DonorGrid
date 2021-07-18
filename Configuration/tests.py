@@ -172,6 +172,46 @@ class PaymentMethodTesting(TestCase):
         self.assertRegex(messages[1].message, r"^The payment method.+was added successfully.$", 'Payment method add message is incorrect')
         pass
 
+    def testPaymentUpdate(self):
+        client_key = self.fake.pystr()
+        secret_key = self.fake.pystr()
+        self.client.post(reverse('admin:Configuration_paymentmethod_add'), data={
+            'provider': 'stripe',
+            'client_key': client_key,
+            'secret_key': secret_key,
+            '_save': 'Save'}, follow=True)
+        old_payment: PaymentMethod = PaymentMethod.objects.first()
+        self.assertIsNotNone(old_payment, 'Initial payment method did not exist')
+
+        client_key = self.fake.pystr()
+        secret_key = self.fake.pystr()
+        self.client.post(reverse('admin:Configuration_paymentmethod_change', kwargs={'object_id': old_payment.id}), data={
+            'provider': 'stripe',
+            'client_key': client_key,
+            'secret_key': secret_key,
+            '_save': 'Save'}, follow=True)
+        new_payment: PaymentMethod = PaymentMethod.objects.first()
+
+        self.assertNotEqual(old_payment.client_key, new_payment.client_key, 'Update payment method operation did not work')
+        pass
+
+    def testPaymentMethodDelete(self):
+        client_key = self.fake.pystr()
+        secret_key = self.fake.pystr()
+        self.client.post(reverse('admin:Configuration_paymentmethod_add'), data={
+            'provider': 'stripe',
+            'client_key': client_key,
+            'secret_key': secret_key,
+            '_save': 'Save'}, follow=True)
+        n = PaymentMethod.objects.count()
+        self.assertEqual(n, 1, 'Initial payment method did not exist')
+
+        self.client.post(reverse('admin:Configuration_paymentmethod_delete', kwargs={'object_id': 1}), data={'post': 'yes'}, follow=True)
+
+        n = PaymentMethod.objects.count()
+        self.assertEqual(n, 0, 'Payment method did not delete')
+        pass
+
     def tearDown(self) -> None:
         self.client.logout()
         pass
