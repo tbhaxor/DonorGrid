@@ -18,7 +18,7 @@ I have been inspired for this project from https://youwecan.org. It not only sol
 
 ### Deployment
 
-Please refer to the deployment guide [here](https://github.com/tbhaxor/DonorGrid/blob/main/DEPLOYMENT.md)
+Please refer to the deployment guide [here](https://github.com/donorgrid/DonorGrid/blob/main/DEPLOYMENT.md)
 
 ### Integration Docs
 
@@ -26,7 +26,7 @@ You can find the documentation [here](https://documenter.getpostman.com/view/111
 
 ## License
 
-DonorGrid is licensed under [MIT License](https://github.com/tbhaxor/DonorGrid/blob/main/LICENSE)
+DonorGrid is licensed under [MIT License](https://github.com/donorgrid/DonorGrid/blob/main/LICENSE)
 
 ## Contribution
 
@@ -34,5 +34,5 @@ Currently, this project in alpha phase. I am not accepting any pull requests
 
 ## Contact Information
 
-+ Email: tbhaxor@gmail.com
-+ Twitter: https://twitter.com/tbhaxor
++ Email: donorgrid@gmail.com
++ Twitter: https://twitter.com/donorgrid
