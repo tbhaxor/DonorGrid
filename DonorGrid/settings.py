@@ -97,7 +97,7 @@ else:
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get('DB_NAME', 'donorgrid'),
         'HOST': os.environ.get('DB_HOST', 'db'),
-        'CONN_MAX_AGE': os.environ.get('DB_CONN_AGE', 60 * 60),
+        'CONN_MAX_AGE': os.environ.get('DB_CONN_AGE', None),
         'PASSWORD': os.environ.get('DB_PASSWORD', 'donorgrid'),
         'PORT': os.environ.get('DB_PORT', 5432),
         'USER': os.environ.get('DB_USER', 'donorgrid')
