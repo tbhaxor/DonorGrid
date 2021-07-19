@@ -55,6 +55,16 @@ The steps of deployment are as follows
    
    **Note** Use `-d` flag to everything in the background
 
+### Configuring initial superuser configuration
+
+By default, it will create superuser for admin panel with **donorgrid:donorgrid** credentials. However, you can change this and use your own credentials by setting up the following environment variable for `app` service in _docker-compose.yaml_
+
+|Env Name|Description|
+|:---:|:---|
+|DG_USER|Username of the donorgrid admin panel|
+|DG_PASS|Password of the donorgrid admin panel|
+|DG_EMAIL|Email address of the donorgrid admin user|
+
 ## Manual Deployment
 
 You must have following dependencies fulfilled
