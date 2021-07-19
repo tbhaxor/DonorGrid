@@ -98,9 +98,9 @@ else:
         'NAME': os.environ.get('DB_NAME', 'donorgrid'),
         'HOST': os.environ.get('DB_HOST', 'db'),
         'CONN_MAX_AGE': os.environ.get('DB_CONN_AGE', 60 * 60),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'db_password'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'donorgrid'),
         'PORT': os.environ.get('DB_PORT', 5432),
-        'USER': os.environ.get('DB_USER', 'postgres')
+        'USER': os.environ.get('DB_USER', 'donorgrid')
     }
 
 # Password validation
