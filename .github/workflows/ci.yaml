@@ -24,7 +24,6 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
         name: Install python
-
       - uses: actions/cache@v2
         with:
           path: ~/.cache/pip
@@ -35,7 +34,7 @@ jobs:
         name: Install pip requirements
       - run: python manage.py check
         name: Check django application
-      - run: python -m coverage  run  --source='.' manage.py test
+      - run: PY_DEV=dev python -m coverage  run  --source='.' manage.py test
         name: Perform unit tests
-      - run: python -m coverage report
+      - run: PY_DEV=dev python -m coverage report
         name: Generate converage report
