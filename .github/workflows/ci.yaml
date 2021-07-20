@@ -34,7 +34,7 @@ jobs:
         name: Install pip requirements
       - run: python manage.py check
         name: Check django application
-      - run: PY_DEV=dev python -m coverage  run  --source='.' manage.py test
+      - run: PY_ENV=dev python -m coverage  run  --source='.' manage.py test
         name: Perform unit tests
-      - run: PY_DEV=dev python -m coverage report
+      - run: PY_ENV=dev python -m coverage report
         name: Generate converage report
