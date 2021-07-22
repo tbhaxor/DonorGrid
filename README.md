@@ -42,5 +42,5 @@ Currently, this project in alpha phase. I am not accepting any pull requests
 
 ## Contact Information
 
-+ Email: donorgrid@gmail.com
-+ Twitter: https://twitter.com/donorgrid
++ Email: tbhaxor@gmail.com
++ Twitter: https://twitter.com/tbhaxor
