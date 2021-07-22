@@ -21,6 +21,7 @@ I have been inspired for this project from https://youwecan.org. It not only sol
   - [ ] SMTP for sending emails
   - [ ] Zapier
   - [ ] Google and Pixel analytics
+- [ ] Translations and i18n
 
 ## Get started now
 
