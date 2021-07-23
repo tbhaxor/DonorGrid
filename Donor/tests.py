@@ -33,6 +33,8 @@ class DonorModelTest(TestCase):
         self.assertEqual(donor.email, self.data['email'], 'Email is incorrect')
         self.assertEqual(donor.phone_number, self.data['phone_number'], 'Phone number is incorrect')
         self.assertEqual(donor.is_anonymous, self.data['is_anonymous'], 'Anonymous flag is incorrect')
+        self.assertEqual(donor.__str__(), donor.email, 'Str representation is not returning email')
+        self.assertEqual(donor.full_name, donor.first_name + ' ' + donor.last_name, 'Full name property is incorrect')
         return donor
 
     def testUpdate(self):
