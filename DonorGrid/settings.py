@@ -150,10 +150,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Setup base url of the website
 BASE_URL = os.environ.get('BASE_URL', 'http://localhost:8000')
 
-# Setup exposing devserver using ngrok
-DEV_SERVER = len(sys.argv) > 1 and sys.argv[1] == 'runserver'
-USE_NGROK = os.environ.get('USE_NGROK') in ['True', 'true', '1', 'yes']
-
 # CORS configuration
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_METHODS = ['GET', 'POST', 'OPTIONS']

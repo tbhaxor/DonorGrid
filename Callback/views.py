@@ -11,7 +11,6 @@ from Configuration.models import PaymentMethod
 # Create your views here.
 @csrf_exempt
 def paypal_execute(request: HttpRequest):
-    print(request.GET)
     donation: Donation = Donation.objects.filter(id=request.GET.get('donation_id', -1)).first()
     payment_method: PaymentMethod = PaymentMethod.objects.filter(id=request.GET.get('gateway_id', -1)).first()
     token = request.GET.get('paymentId', None)
