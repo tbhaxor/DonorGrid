@@ -45,10 +45,7 @@ class PackageCRUD(TestCase):
             'description': self.description,
             'amount': round(self.amount, 2),
             'currency': self.curr
-        }, follow=False)
-
-        self.assertEqual(r.headers.get('Location'), reverse('admin:Package_package_changelist'), 'Location header value is incorrect')
-        self.assertIsNone(r.context, 'Request context is not None')
+        })
 
         package: Package = Package.objects.first()
         self.assertIsNotNone(package, 'Package object supposed to be committed in db')
@@ -98,7 +95,6 @@ class PackageCRUD(TestCase):
         }, follow=False)
 
         ctx: Context = r.context
-        self.assertIsNone(r.headers.get('Location'), 'Location header is not None on incorrect data')
         self.assertIsNotNone(ctx.get('errors'), 'Errors object is None on incorrect data')
 
         errors = functools.reduce(operator.iconcat, ctx.get('errors'))
@@ -111,7 +107,7 @@ class PackageCRUD(TestCase):
             'currency': self.curr,
         }, follow=False)
 
-        self.assertIsNotNone(r.headers.get('Location'), 'Location header is None on correct data')
+        self.assertIsNone(r.context, 'Correct data causing error')
         pass
 
     def testRequiredName(self):
@@ -124,7 +120,6 @@ class PackageCRUD(TestCase):
 
         ctx: Context = r.context
 
-        self.assertIsNone(r.headers.get('Location'), 'Location header is not None on incorrect data')
         self.assertIsNotNone(ctx.get('errors'), 'Errors object is None on incorrect data')
 
         errors = functools.reduce(operator.iconcat, ctx.get('errors').data)
@@ -137,7 +132,7 @@ class PackageCRUD(TestCase):
             'currency': self.curr,
         }, follow=False)
 
-        self.assertIsNotNone(r.headers.get('Location'), 'Location header is None on correct data')
+        self.assertIsNone(r.context, 'Correct data causing error')
         pass
 
     def testRequiredAmount(self):
@@ -149,7 +144,6 @@ class PackageCRUD(TestCase):
         }, follow=False)
 
         ctx: Context = r.context
-        self.assertIsNone(r.headers.get('Location'), 'Location header is not None on incorrect data')
         self.assertIsNotNone(ctx.get('errors'), 'Errors object is None on incorrect data')
 
         errors = functools.reduce(operator.iconcat, ctx.get('errors').data)
@@ -162,7 +156,7 @@ class PackageCRUD(TestCase):
             'currency': self.curr,
         }, follow=False)
 
-        self.assertIsNotNone(r.headers.get('Location'), 'Location header is None on correct data')
+        self.assertIsNone(r.context, 'Correct data causing error')
         pass
 
     def testFailRecurring(self):
@@ -175,7 +169,6 @@ class PackageCRUD(TestCase):
         }, follow=False)
 
         ctx: Context = r.context
-        self.assertIsNone(r.headers.get('Location'), 'Location header is not None on incorrect data')
         self.assertIsNotNone(ctx.get('errors'), 'Errors object is None on incorrect data')
 
         errors = functools.reduce(operator.iconcat, ctx.get('errors').data)
