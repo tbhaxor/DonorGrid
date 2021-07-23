@@ -40,7 +40,7 @@ class PackageCRUD(TestCase):
         pass
 
     def testCreatePackage(self):
-        r = self.client.post(reverse('admin:Package_package_add'), data={
+        self.client.post(reverse('admin:Package_package_add'), data={
             'name': self.name,
             'description': self.description,
             'amount': round(self.amount, 2),
@@ -60,20 +60,20 @@ class PackageCRUD(TestCase):
     def testUpdate(self):
         old_package = self.testCreatePackage()
 
-        self.name = self.fake.name()
-        self.curr = self.fake.currency_code()
+        name = self.fake.name()
+        curr = self.fake.currency_code()
         self.client.post(reverse('admin:Package_package_change', kwargs={'object_id': old_package.id}), data={
-            'name': self.name,
+            'name': name,
             'description': old_package.description,
             'amount': old_package.amount,
-            'currency': self.curr
+            'currency': curr
         })
 
         new_package: Package = Package.objects.first()
         self.assertEqual(old_package.id, new_package.id, 'Package ID is not same')
-        self.assertEqual(self.name, new_package.name, 'Package name differs')
+        self.assertEqual(name, new_package.name, 'Package name differs')
         self.assertNotEqual(old_package.name, new_package.name, 'Package name didnt change')
-        self.assertEqual(self.curr, new_package.currency, 'Currency code differs')
+        self.assertEqual(curr, new_package.currency, 'Currency code differs')
         self.assertNotEqual(old_package.currency, new_package.currency, 'Currency code didnt change')
         pass
 
