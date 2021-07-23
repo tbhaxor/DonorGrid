@@ -22,6 +22,7 @@ I have been inspired for this project from https://youwecan.org. It not only sol
   - [ ] Zapier
   - [ ] Google and Pixel analytics
 - [ ] Translations and i18n
+- [ ] Crowd funding
 
 ## Get started now
 
