@@ -17,6 +17,14 @@ jobs:
             id: ubuntu-20.04
           - name: Ubuntu Bionic
             id: ubuntu-18.04
+          - name: Windows Server 2016
+            id: windows-2016
+          - name: Windows Server 2019
+            id: windows-2019
+          - name: MacOS 11
+            id: macos-11.0
+          - name: Macos 10
+            id: macos-10.15
     steps:
       - uses: actions/checkout@v2
         name: Clone repository
