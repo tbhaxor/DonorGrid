@@ -19,6 +19,7 @@ The application let you choose what your postgres connection, and the app level 
 |DB_PORT|5432|Port on which postgres is running|
 |DB_USER|donorgrid|Username of the database|
 |BASE_URL|http://localhost:8000|FQDN base url of the website| 
+|POST_DONATION_REDIRECT|Value of `BASE_URL` environment variable|URL to redirect to after executing the donation payments|
 
 ## Docker Compose (recommended)
 
