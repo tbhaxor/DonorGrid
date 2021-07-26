@@ -17,7 +17,7 @@ def paypal_execute(request: HttpRequest):
     payer_id = request.GET.get('PayerID', None)
 
     if donation is None or payment_method is None or token is None or payer_id is None:
-        return HttpResponseRedirect(redirect_to=settings.BASE_URL + '?' + urlencode({
+        return HttpResponseRedirect(redirect_to=settings.DONATION_REDIRECT_URL + '?' + urlencode({
             'success': 'false',
             'message': 'Request is not containing processable entities'
         }))
@@ -33,14 +33,14 @@ def paypal_execute(request: HttpRequest):
         message = paypal_payment.error.get('message', 'Something went wrong')
         if 'details' in paypal_payment.error:
             message = paypal_payment.error['details'][0]['issue']
-        return HttpResponseRedirect(redirect_to=settings.BASE_URL + '?' + urlencode({
+        return HttpResponseRedirect(redirect_to=settings.DONATION_REDIRECT_URL + '?' + urlencode({
             'success': 'false',
             'message': message
         }))
 
     donation.is_completed = True
     donation.save()
-    return HttpResponseRedirect(redirect_to=settings.BASE_URL + '?' + urlencode({
+    return HttpResponseRedirect(redirect_to=settings.DONATION_REDIRECT_URL + '?' + urlencode({
         'success': 'true',
         'message': 'Donation completed. Thanks for your generosity'
     }))
@@ -48,7 +48,7 @@ def paypal_execute(request: HttpRequest):
 
 @csrf_exempt
 def paypal_cancel(request: HttpRequest):
-    return HttpResponseRedirect(redirect_to=settings.BASE_URL + '?' + urlencode({'success': 'false', 'message': 'Cancelled by the user'}))
+    return HttpResponseRedirect(redirect_to=settings.DONATION_REDIRECT_URL + '?' + urlencode({'success': 'false', 'message': 'Cancelled by the user'}))
 
 
 @csrf_exempt
@@ -56,14 +56,14 @@ def stripe_confirm(request: HttpRequest):
     donation: Donation = Donation.objects.filter(id=request.GET.get('donation_id', -1)).first()
 
     if donation is None:
-        return HttpResponseRedirect(redirect_to=settings.BASE_URL + '?' + urlencode({
+        return HttpResponseRedirect(redirect_to=settings.DONATION_REDIRECT_URL + '?' + urlencode({
             'success': 'false',
             'message': 'Request is not containing processable entities'
         }))
 
     donation.is_completed = True
     donation.save()
-    return HttpResponseRedirect(redirect_to=settings.BASE_URL + '?' + urlencode({
+    return HttpResponseRedirect(redirect_to=settings.DONATION_REDIRECT_URL + '?' + urlencode({
         'success': 'true',
         'message': 'Donation completed. Thanks for your generosity'
     }))
