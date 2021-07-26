@@ -149,6 +149,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Setup base url of the website
 BASE_URL = os.environ.get('BASE_URL', 'http://localhost:8000')
+DONATION_REDIRECT_URL = os.environ.get('POST_DONATION_REDIRECT', BASE_URL)
 
 # CORS configuration
 CORS_ALLOW_ALL_ORIGINS = True
