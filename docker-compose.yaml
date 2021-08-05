@@ -24,7 +24,6 @@ services:
       POSTGRES_DB: donorgrid
       POSTGRES_USER: donorgrid
 
-
 volumes:
   static:
     driver: local
