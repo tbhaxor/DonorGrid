@@ -14,7 +14,7 @@ services:
   app:
     depends_on:
       - db
-    build: .
+    image: tbhaxor/donorgrid
     volumes:
     - static:/app/static
   db:
