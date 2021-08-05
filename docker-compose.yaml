@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   nginx:
-    image: nginx
+    image: nginx:1.21-alpine
     depends_on:
       - app
     volumes:
