@@ -35,26 +35,25 @@ The steps of deployment are as follows
     ```shell
     git clone https://github.com/donorgrid/DonorGrid
     ```
-   
-2. Configure `server_name` in _nginx.conf_ file
+
+2. Rename _nginx.conf.example_ to _nginx.conf_ and configure `server_name` in it
    ```diff
    - server_name _;
    + server_name donation.site.com;
    ```
    
-3. Configure nginx port in _docker-compose.yaml_ file
-   ```diff
-   - - 8080:80
-   + 80:80
-   ```
-
-4. Boot up the server
-   
+3. Install the certificates
    ```shell
-   docker-compose up 
+   docker-compose up
    ```
    
-   **Note** Use `-d` flag to everything in the background
+   **Note** The nginx is failing unexpectedly when you add the certificate. This will be fixed in future updates
+
+4. Kill the containers by pressing CTRL+C twice
+5. Restart the application
+   ```shell
+   docker-compose up -d
+   ```
 
 ### Configuring initial superuser configuration
 
