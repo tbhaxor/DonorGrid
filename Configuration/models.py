@@ -9,7 +9,7 @@ class PaymentMethod(models.Model):
 		RAZORPAY = 'razorpay', _('RazorPay')
 
 	class PaymentEnvironment(models.TextChoices):
-		DEVELOPMENT = 'dev', _('Development'),
+		DEVELOPMENT = 'dev', _('Development')
 		PRODUCTION = 'prod', _('Production')
 
 	provider = models.CharField(max_length=15, choices=PaymentProvider.choices, default=PaymentProvider.STRIPE)
