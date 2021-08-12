@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.forms import ModelForm
 from django.conf import settings
 from django.utils.html import format_html
-from .models import PaymentMethod
+from .models import PaymentMethod, CustomField
 from stripe.api_resources import WebhookEndpoint
 from paypalrestsdk.api import Api
 from paypalrestsdk.notifications import Webhook
@@ -97,4 +97,26 @@ class PaymentMethodRegister(admin.ModelAdmin):
     def payment_gateway(self, obj: PaymentMethod):
         name = [*filter(lambda x: x[0] == obj.provider, PaymentMethod.PaymentProvider.choices)][0][1]
         return name
+    pass
+
+
+@admin.register(CustomField)
+class CustomFieldRegister(admin.ModelAdmin):
+    empty_value_display = 'N/A'
+    list_display = ['name', 'type', 'placeholder']
+
+    fieldsets = (
+        (
+            'Basic Details', {
+                'description': 'Add basic details of custom fields like name and type',
+                'fields': ('name', 'type')
+            }
+        ),
+        (
+            'Other Settings', {
+                'description': 'Provide additional information for donors',
+                'fields': ('placeholder', ('attributes', 'help_text'))
+            }
+        )
+    )
     pass
