@@ -1,6 +1,8 @@
-from django.http import JsonResponse, HttpRequest, HttpResponseNotFound, HttpResponseForbidden, HttpResponsePermanentRedirect
+import json
+from django.http import JsonResponse, HttpRequest, HttpResponseNotFound, HttpResponseForbidden, HttpResponsePermanentRedirect, HttpResponseNotAllowed
 from django.views.decorators.csrf import csrf_exempt
-from .models import Donor, Donation, Package, PaymentMethod
+from .models import Donor, Donation, Package
+from Configuration.models import PaymentMethod, CustomField
 from django.conf import settings
 from django.urls import reverse
 from paypalrestsdk.payments import Payment
@@ -11,10 +13,14 @@ from urllib.parse import urlencode
 from razorpay.client import Client
 from razorpay.resources.payment import Payment as RZPayment
 from razorpay.errors import BadRequestError
+from base64 import b64decode
 
 
 @csrf_exempt
 def create_donation(request: HttpRequest):
+    if request.method == 'GET':
+        return HttpResponseNotAllowed(permitted_methods=['POST'])
+
     if request.POST.get('package', None) is None and float(request.POST.get('amount', 0)) <= 0:
         return HttpResponseForbidden('Amount or package id is required')
     package: Package = Package.objects.filter(id=request.POST.get('package', -1)).first()
@@ -34,7 +40,15 @@ def create_donation(request: HttpRequest):
         'phone_number': request.POST.get('phone_number', None)
     })[0]
 
-    donation = Donation(donor=donor, package=package, on_behalf_of=request.POST.get('on_behalf_of', ''), note=request.POST.get('note', ''))
+    custom_fields = {}
+    raw_fields: dict = json.loads(b64decode(request.POST.get('custom_data', 'e30=')).decode())
+    for k, v in raw_fields.items():
+        if CustomField.objects.filter(name=k).count():
+            custom_fields[k] = v
+        pass
+    custom_fields = custom_fields if custom_fields.keys() else None
+
+    donation = Donation(donor=donor, package=package, on_behalf_of=request.POST.get('on_behalf_of', ''), note=request.POST.get('note', ''), custom_data=custom_fields)
     if package is None:
         donation.currency = request.POST.get('currency', 'USD')
         donation.amount = float(request.POST['amount'])
