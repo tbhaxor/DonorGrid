@@ -16,4 +16,5 @@ class Donation(models.Model):
     is_completed = models.BooleanField(default=False, null=False, blank=True)
     on_behalf_of = models.CharField(max_length=256, null=True, default='', blank=True)
     note = models.CharField(max_length=1024, null=True, default='', blank=True)
+    custom_data = models.JSONField(null=True, blank=True)
     pass
