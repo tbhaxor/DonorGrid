@@ -338,4 +338,7 @@ pip-selfcheck.json
 uploads/*
 !uploads/.gitkeep
 
+### Deployment configs
+nginx.conf
+
 # End of https://www.toptal.com/developers/gitignore/api/venv,pycharm+all,visualstudiocode,django,python
