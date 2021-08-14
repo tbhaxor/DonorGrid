@@ -5,7 +5,7 @@ from django.shortcuts import reverse
 from .models import Package
 from faker import Faker
 from faker.providers import internet, profile, python, currency, lorem
-from time import time
+from time import time, sleep
 from decimal import Decimal
 import functools
 import operator
@@ -47,6 +47,8 @@ class PackageCRUD(TestCase):
             'currency': self.curr
         })
 
+        sleep(1)
+
         package: Package = Package.objects.first()
         self.assertIsNotNone(package, 'Package object supposed to be committed in db')
         self.assertEqual(package.name, self.name, 'Incorrect package name')
@@ -69,6 +71,8 @@ class PackageCRUD(TestCase):
             'currency': curr
         })
 
+        sleep(1)
+
         new_package: Package = Package.objects.first()
         self.assertEqual(old_package.id, new_package.id, 'Package ID is not same')
         self.assertEqual(name, new_package.name, 'Package name differs')
@@ -82,6 +86,8 @@ class PackageCRUD(TestCase):
 
         self.client.post(reverse('admin:Package_package_delete', kwargs={'object_id': old_package.id}), data={'post': 'yes'})
 
+        sleep(1)
+
         new_package = Package.objects.first()
         self.assertIsNone(new_package, 'Unable to delete package')
         pass
@@ -93,6 +99,8 @@ class PackageCRUD(TestCase):
             'amount': self.amount,
             'currency': self.curr
         }, follow=False)
+
+        sleep(1)
 
         ctx: Context = r.context
         self.assertIsNotNone(ctx.get('errors'), 'Errors object is None on incorrect data')
@@ -107,6 +115,8 @@ class PackageCRUD(TestCase):
             'currency': self.curr,
         }, follow=False)
 
+        sleep(1)
+
         self.assertIsNone(r.context, 'Correct data causing error')
         pass
 
@@ -117,6 +127,8 @@ class PackageCRUD(TestCase):
             'amount': self.amount,
             'currency': self.curr,
         }, follow=False)
+
+        sleep(1)
 
         ctx: Context = r.context
 
@@ -131,6 +143,8 @@ class PackageCRUD(TestCase):
             'amount': round(self.amount, 2),
             'currency': self.curr,
         }, follow=False)
+
+        sleep(1)
 
         self.assertIsNone(r.context, 'Correct data causing error')
         pass
@@ -143,6 +157,8 @@ class PackageCRUD(TestCase):
             'currency': self.curr,
         }, follow=False)
 
+        sleep(1)
+
         ctx: Context = r.context
         self.assertIsNotNone(ctx.get('errors'), 'Errors object is None on incorrect data')
 
@@ -156,6 +172,8 @@ class PackageCRUD(TestCase):
             'currency': self.curr,
         }, follow=False)
 
+        sleep(1)
+
         self.assertIsNone(r.context, 'Correct data causing error')
         pass
 
@@ -167,6 +185,8 @@ class PackageCRUD(TestCase):
             'currency': self.curr,
             'recurring_interval': 'year'
         }, follow=False)
+
+        sleep(1)
 
         ctx: Context = r.context
         self.assertIsNotNone(ctx.get('errors'), 'Errors object is None on incorrect data')
