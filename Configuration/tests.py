@@ -4,10 +4,11 @@ from django.contrib.messages.storage.base import Message
 from django.contrib.auth.models import User
 from django.shortcuts import reverse
 from django.conf import settings
+from django.db.utils import IntegrityError
 from faker import Faker
-from faker.providers import internet, profile, python
+from faker.providers import internet, profile, python, lorem
 from time import time
-from .models import PaymentMethod
+from .models import PaymentMethod, CustomField
 from typing import List
 import os
 import functools
@@ -214,5 +215,65 @@ class PaymentMethodTesting(TestCase):
 
     def tearDown(self) -> None:
         self.client.logout()
+        pass
+    pass
+
+
+class CustomFieldTesting(TestCase):
+    """
+    Since there is no custom form, so here testing should be done directly on the model
+    """
+    def setUp(self) -> None:
+        os.environ['CI'] = 'True'
+        Faker.seed(time())
+        self.fake = Faker()
+        self.fake.add_provider(profile)
+        self.fake.add_provider(lorem)
+
+        simple_profile = self.fake.simple_profile()
+        paragraph = self.fake.paragraph()
+
+        self.properties = {
+            'name': simple_profile['name'],
+            'placeholder': 'Enter the value of %s' % simple_profile['username'],
+            'attributes': {'id': simple_profile['username']},
+            'type': 'text',
+            'help_text': paragraph
+        }
+        pass
+
+    def testCreateField(self):
+        field = CustomField.objects.create(**self.properties)
+
+        self.assertEqual(field.__str__(), 'Custom Field %s of type %s' % (field.name, field.type), '__str__() value is wrong')
+        self.assertEqual(field.name, self.properties['name'], 'name field value differs')
+        self.assertEqual(field.placeholder, self.properties['placeholder'], 'placeholder field value differs')
+        self.assertEqual(field.attributes['id'], self.properties['attributes']['id'], 'attribute.id field value differs')
+        self.assertEqual(field.type, self.properties['type'], 'type field value differs')
+        self.assertEqual(field.help_text, self.properties['help_text'], 'help_text field value differs')
+
+        return field
+
+    def testCustomFieldUpdate(self):
+        field = self.testCreateField()
+
+        self.properties['name'] = self.fake.simple_profile()['name']
+        CustomField.objects.filter(id=field.id).update(**self.properties)
+
+        field: CustomField = CustomField.objects.filter(id=field.id).first()
+
+        self.assertIsNotNone(field, 'Custom field not exists in db')
+        self.assertEqual(field.__str__(), 'Custom Field %s of type %s' % (field.name, field.type), '__str__() value is wrong')
+        self.assertEqual(field.name, self.properties['name'], 'name field value differs')
+        pass
+
+    def testNameNotNullValidation(self):
+        with self.assertRaisesMessage(IntegrityError, 'NOT NULL constraint failed: Configuration_customfield.name'):
+            CustomField.objects.create(**{**self.properties, 'name': None})
+        pass
+
+    def testTypeNotNullValidation(self):
+        with self.assertRaisesMessage(IntegrityError, 'NOT NULL constraint failed: Configuration_customfield.type'):
+            CustomField.objects.create(**{**self.properties, 'type': None})
         pass
     pass
