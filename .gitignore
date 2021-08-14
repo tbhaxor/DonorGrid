@@ -334,4 +334,8 @@ pip-selfcheck.json
 .history
 .ionide
 
+### Media URLS
+uploads/*
+!uploads/.gitkeep
+
 # End of https://www.toptal.com/developers/gitignore/api/venv,pycharm+all,visualstudiocode,django,python
