@@ -25,7 +25,7 @@ I have been inspired for this project from https://youwecan.org. It not only sol
 - [ ] Charts and analytics on admin panel
 - [ ] Hosted checkout page
 - [ ] Translations and i18n
-- [ ] Crowd funding
+- [ ] Crowdfunding
 
 ## Get started now
 
