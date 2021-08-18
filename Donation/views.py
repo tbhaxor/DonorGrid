@@ -2,7 +2,8 @@ import json
 from django.http import JsonResponse, HttpRequest, HttpResponseNotFound, HttpResponseForbidden, HttpResponsePermanentRedirect, HttpResponseNotAllowed
 from django.views.decorators.csrf import csrf_exempt
 from .models import Donor, Donation, Package
-from Configuration.models import PaymentMethod, CustomField
+from Configuration.models import PaymentMethod, CustomField, SMTPServer
+from Configuration.utils import send_email
 from django.conf import settings
 from django.urls import reverse
 from paypalrestsdk.payments import Payment
@@ -139,8 +140,10 @@ def create_donation(request: HttpRequest):
             else:
                 donation.is_completed = stripe_payment['status'] == 'succeeded'
                 donation.save()
+                send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_FAIL if donation.is_completed else SMTPServer.EventChoices.ON_PAYMENT_SUCCESS)
         except (StripeError, CardError, InvalidRequestError) as e:
             donation.delete()
+            send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_FAIL)
             return JsonResponse(data={'success': False, 'message': e.user_message})
         pass
     else:
@@ -153,6 +156,7 @@ def create_donation(request: HttpRequest):
             rz_payment: dict = client.fetch(token)
             if rz_payment.get('status') != 'authorized':
                 donation.delete()
+                send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_FAIL)
                 return JsonResponse(data={'success': False, 'message': 'Unprocessable payment token passed'})
 
             client.capture(token, rz_payment.get('amount'), {'currency': rz_payment.get('currency')})
@@ -161,6 +165,8 @@ def create_donation(request: HttpRequest):
             donation.save()
         except BadRequestError as e:
             donation.delete()
+            send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_FAIL)
             return JsonResponse(data={'success': False, 'message': e.args[0]})
 
+    send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_SUCCESS)
     return JsonResponse(data={'success': True, 'message': 'Donation has been made'})
