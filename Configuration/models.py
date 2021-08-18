@@ -50,7 +50,7 @@ class CustomField(models.Model):
                                  default='')
 
     def __str__(self):
-        return "Custom Field %s of type %s" % (self.name, self.type)
+        return 'Custom Field %s of type %s' % (self.name, self.type)
 
     def __repr__(self):
         return self.__str__()
@@ -78,7 +78,7 @@ class SMTPSever(models.Model):
     event = models.CharField(max_length=7, verbose_name='Trigger event', help_text='Select when you want to send the email to donors', default=EventChoices.ON_PAYMENT_SUCCESS, choices=EventChoices.choices, null=False, blank=False)
 
     def __str__(self):
-        return "SMTP Config - %s" % self.subject
+        return 'SMTP Config - %s' % self.subject
 
     def __repr__(self):
         return self.__str__()
