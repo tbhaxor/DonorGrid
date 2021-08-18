@@ -142,7 +142,7 @@ class SMTPServerRegister(admin.ModelAdmin):
         (
             'Email Content', {
                 'description': 'Enter the content for your email. Please note currently it doesn\'t support email variables.',
-                'fields': ('event', 'subject', 'template'),
+                'fields': ('event', ('from_name', 'from_email'),  'subject', 'template'),
             }
         )
     )
