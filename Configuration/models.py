@@ -27,6 +27,9 @@ class PaymentMethod(models.Model):
     def __repr__(self):
         return self.__str__()
 
+    class Meta:
+        verbose_name = 'Payment Method Configuration'
+        verbose_name_plural = 'Payment Method Configurations'
     pass
 
 
@@ -54,7 +57,10 @@ class CustomField(models.Model):
 
     def __repr__(self):
         return self.__str__()
-
+    
+    class Meta:
+        verbose_name = 'Custom Field'
+        verbose_name_plural = 'Custom Fields'
     pass
 
 
@@ -82,4 +88,8 @@ class SMTPSever(models.Model):
 
     def __repr__(self):
         return self.__str__()
+
+    class Meta:
+        verbose_name = 'SMTP Server Config'
+        verbose_name_plural = 'SMTP Server Configs'
     pass
