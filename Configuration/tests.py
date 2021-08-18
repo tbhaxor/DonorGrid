@@ -6,9 +6,9 @@ from django.shortcuts import reverse
 from django.conf import settings
 from django.db.utils import IntegrityError
 from faker import Faker
-from faker.providers import internet, profile, python, lorem
+from faker.providers import internet, profile, python, lorem, misc
 from time import time
-from .models import PaymentMethod, CustomField
+from .models import PaymentMethod, CustomField, SMTPServer
 from typing import List
 import os
 import functools
@@ -275,5 +275,104 @@ class CustomFieldTesting(TestCase):
     def testTypeNotNullValidation(self):
         with self.assertRaisesMessage(IntegrityError, 'NOT NULL constraint failed: Configuration_customfield.type'):
             CustomField.objects.create(**{**self.properties, 'type': None})
+        pass
+    pass
+
+
+class SMTPServerTesting(TestCase):
+    def setUp(self) -> None:
+        os.environ['CI'] = 'True'
+        Faker.seed(time())
+        self.fake = Faker()
+        self.fake.add_provider(profile)
+        self.fake.add_provider(lorem)
+        self.fake.add_provider(internet)
+        self.fake.add_provider(misc)
+
+        simple_profile = self.fake.simple_profile()
+
+        self.payload = {
+            'host': self.fake.hostname(),
+            'username': simple_profile['username'],
+            'password': self.fake.password(),
+            'subject': self.fake.paragraph(),
+            'template': self.fake.paragraph(),
+            'from_email': simple_profile['mail'],
+            'from_name': simple_profile['name']
+        }
+        pass
+
+    def testCreate(self):
+        SMTPServer.objects.create(**self.payload)
+
+        server: SMTPServer = SMTPServer.objects.first()
+
+        self.assertIsNotNone(server, 'Model is not saved')
+        self.assertEqual(server.host, self.payload['host'])
+        self.assertEqual(server.username, self.payload['username'])
+        self.assertEqual(server.password, self.payload['password'])
+        self.assertEqual(server.subject, self.payload['subject'])
+        self.assertEqual(server.template, self.payload['template'])
+        self.assertEqual(server.from_name, self.payload['from_name'])
+        self.assertEqual(server.from_email, self.payload['from_email'])
+
+        return server
+
+    def fieldNullCheck(self, field):
+        try:
+            del self.payload[field]
+        except KeyError:
+            self.payload[field] = None
+
+        with self.assertRaisesMessage(IntegrityError, 'NOT NULL constraint failed: Configuration_smtpserver.%s' % field):
+            SMTPServer.objects.create(**self.payload)
+        pass
+
+    def testHostNameNullValidator(self):
+        self.fieldNullCheck('host')
+        pass
+
+    def testUsernameNullValidator(self):
+        self.fieldNullCheck('username')
+        pass
+
+    def testPasswordNullValidation(self):
+        self.fieldNullCheck('password')
+        pass
+
+    def testPortNullValidation(self):
+        self.fieldNullCheck('port')
+        pass
+
+    def testSubjectNullValidation(self):
+        self.fieldNullCheck('subject')
+        pass
+
+    def testTemplateNullValidation(self):
+        self.fieldNullCheck('template')
+        pass
+
+    def testEventNullValidation(self):
+        self.fieldNullCheck('event')
+        pass
+
+    def testUpdate(self):
+        old_smtp: SMTPServer = self.testCreate()
+
+        self.payload['host'] = self.fake.hostname()
+        SMTPServer.objects.filter(id=old_smtp.id).update(host=self.payload['host'])
+
+        new_smtp: SMTPServer = SMTPServer.objects.first()
+        self.assertIsNotNone(new_smtp, 'Object got deleted')
+
+        self.assertNotEqual(new_smtp.host, old_smtp.host, 'Host data not changed')
+        pass
+
+    def testDelete(self):
+        smtp = self.testCreate()
+        smtp.delete()
+
+        count = SMTPServer.objects.count()
+        self.assertEqual(count, 0, 'Unable to delete object from db')
         pass
     pass
