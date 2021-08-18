@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.forms import ModelForm, PasswordInput
+from django.forms import ModelForm
 from django.conf import settings
 from django.utils.html import format_html
 from .models import PaymentMethod, CustomField, SMTPServer
