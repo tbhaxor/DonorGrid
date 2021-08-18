@@ -9,18 +9,21 @@ I have been inspired for this project from https://youwecan.org. It not only sol
 ## Feature
 
 - [x] Ready to integrate APIs
+- [x] User friendly admin panel
 - [x] Multi-user management panel for the staff with granular permissions
 - [x] Create pre-configured packages of donation with amount and currency
 - [x] Accept custom amount in donor specified currency. [See here](https://developer.paypal.com/docs/api/reference/currency-codes/)
 - [x] Support three popular payment gateways: [Stripe](https://stripe.com), [PayPal](https://www.paypal.com/) and [RazorPay](https://razorpay.com)
-- [ ] Recurring donations
-- [ ] Charts and analytics on admin panel
-- [ ] Custom fields
-- [ ] Hosted checkout page
+- [x] Custom fields
+- [x] Full admin panel whitelabel
 - [ ] Integrations
-  - [ ] SMTP for sending emails
+  - [x] SMTP for sending emails
+  - [ ] Pabbly Connect
   - [ ] Zapier
   - [ ] Google and Pixel analytics
+- [ ] Recurring donations
+- [ ] Charts and analytics on admin panel
+- [ ] Hosted checkout page
 - [ ] Translations and i18n
 - [ ] Crowd funding
 
