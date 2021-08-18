@@ -81,7 +81,11 @@ class SMTPSever(models.Model):
     port = models.IntegerField(help_text='Enter port number', verbose_name='Port number', null=False, default=SMTPPortChoice.port_25, choices=SMTPPortChoice.choices, blank=False)
     subject = models.CharField(max_length=128, help_text='Enter email subject', verbose_name='Email Subject', null=False, blank=False, default=None)
     template = RichTextField(verbose_name='Email Body', help_text='Enter email body here', null=False, blank=False, default=None)
-    event = models.CharField(max_length=7, verbose_name='Trigger event', help_text='Select when you want to send the email to donors', default=EventChoices.ON_PAYMENT_SUCCESS, choices=EventChoices.choices, null=False, blank=False)
+    event = models.CharField(max_length=7, verbose_name='Trigger event', help_text='Select when you want to send the email to donors', default=EventChoices.ON_PAYMENT_SUCCESS,
+                             choices=EventChoices.choices, null=False, blank=False)
+    from_name = models.CharField(max_length=50, verbose_name='From Name', help_text='Enter the name from which you want to send the email', default='DonorGrid', null=False, blank=False)
+    from_email = models.CharField(max_length=75, verbose_name='From Email', help_text='Enter the email address from which you want to send the email', default='no_reply@donorgrid.io', null=False,
+                                  blank=False)
 
     def __str__(self):
         return 'SMTP Config - %s' % self.subject
