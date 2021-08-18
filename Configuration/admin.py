@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.forms import ModelForm, PasswordInput
 from django.conf import settings
 from django.utils.html import format_html
-from .models import PaymentMethod, CustomField, SMTPSever
+from .models import PaymentMethod, CustomField, SMTPServer
 from stripe.api_resources import WebhookEndpoint
 from paypalrestsdk.api import Api
 from paypalrestsdk.notifications import Webhook
@@ -122,7 +122,7 @@ class CustomFieldRegister(admin.ModelAdmin):
     pass
 
 
-@admin.register(SMTPSever)
+@admin.register(SMTPServer)
 class SMTPServerRegister(admin.ModelAdmin):
     list_display = ['subject', 'host', 'username']
 

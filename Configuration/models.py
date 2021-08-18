@@ -64,7 +64,7 @@ class CustomField(models.Model):
     pass
 
 
-class SMTPSever(models.Model):
+class SMTPServer(models.Model):
     class SMTPPortChoice(models.IntegerChoices):
         port_25 = 25, _('25 - Insecure')
         port_465 = 465, _('465 - SSL Secure')
