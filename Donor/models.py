@@ -15,4 +15,8 @@ class Donor(models.Model):
     @property
     def full_name(self):
         return self.first_name + ' ' + self.last_name
+
+    class Meta:
+        verbose_name = 'Donor'
+        verbose_name_plural = 'Donors'
     pass
