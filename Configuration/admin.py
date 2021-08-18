@@ -1,8 +1,8 @@
 from django.contrib import admin
-from django.forms import ModelForm
+from django.forms import ModelForm, PasswordInput
 from django.conf import settings
 from django.utils.html import format_html
-from .models import PaymentMethod, CustomField
+from .models import PaymentMethod, CustomField, SMTPSever
 from stripe.api_resources import WebhookEndpoint
 from paypalrestsdk.api import Api
 from paypalrestsdk.notifications import Webhook
@@ -20,7 +20,7 @@ class PaymentMethodForm(ModelForm):
 
     class Meta:
         model = PaymentMethod
-        fields = ['provider', 'secret_key', 'client_key', 'environment', 'is_active']
+        fields = '__all__'
     pass
 
 
@@ -116,6 +116,33 @@ class CustomFieldRegister(admin.ModelAdmin):
             'Other Settings', {
                 'description': 'Provide additional information for donors',
                 'fields': ('placeholder', ('attributes', 'help_text'))
+            }
+        )
+    )
+    pass
+
+
+@admin.register(SMTPSever)
+class SMTPServerRegister(admin.ModelAdmin):
+    list_display = ['subject', 'host', 'username']
+
+    fieldsets = (
+        (
+            'Connection Details', {
+                'description': 'Enter basic connection details here like hostname and port number',
+                'fields': (('host', 'port'),)
+            }
+        ),
+        (
+            'Authentication Details', {
+                'description': 'Enter smtp authentication details like username and password',
+                'fields': (('username', 'password'),)
+            }
+        ),
+        (
+            'Email Content', {
+                'description': 'Enter the content for your email. Please note currently it doesn\'t support email variables.',
+                'fields': ('event', 'subject', 'template'),
             }
         )
     )
