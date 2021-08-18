@@ -5,7 +5,8 @@ from django.views.decorators.csrf import csrf_exempt
 from paypalrestsdk.api import Api
 from paypalrestsdk.payments import Payment
 from Donation.models import Donation
-from Configuration.models import PaymentMethod
+from Configuration.models import PaymentMethod, SMTPServer
+from Configuration.utils import send_email
 
 
 # Create your views here.
@@ -33,6 +34,8 @@ def paypal_execute(request: HttpRequest):
         message = paypal_payment.error.get('message', 'Something went wrong')
         if 'details' in paypal_payment.error:
             message = paypal_payment.error['details'][0]['issue']
+
+        send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_FAIL)
         return HttpResponseRedirect(redirect_to=settings.DONATION_REDIRECT_URL + '?' + urlencode({
             'success': 'false',
             'message': message
@@ -40,6 +43,8 @@ def paypal_execute(request: HttpRequest):
 
     donation.is_completed = True
     donation.save()
+
+    send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_SUCCESS)
     return HttpResponseRedirect(redirect_to=settings.DONATION_REDIRECT_URL + '?' + urlencode({
         'success': 'true',
         'message': 'Donation completed. Thanks for your generosity'
@@ -63,6 +68,8 @@ def stripe_confirm(request: HttpRequest):
 
     donation.is_completed = True
     donation.save()
+
+    send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_SUCCESS)
     return HttpResponseRedirect(redirect_to=settings.DONATION_REDIRECT_URL + '?' + urlencode({
         'success': 'true',
         'message': 'Donation completed. Thanks for your generosity'
