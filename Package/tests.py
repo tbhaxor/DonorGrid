@@ -50,6 +50,8 @@ class PackageCRUD(TestCase):
         sleep(1)
 
         package: Package = Package.objects.first()
+        if package is None:
+            package = Package.objects.first()
         self.assertIsNotNone(package, 'Package object supposed to be committed in db')
         self.assertEqual(package.name, self.name, 'Incorrect package name')
         self.assertEqual(package.amount, round(Decimal(self.amount), 2), 'Incorrect package amount value')
@@ -74,6 +76,8 @@ class PackageCRUD(TestCase):
         sleep(1)
 
         new_package: Package = Package.objects.first()
+        if new_package is None:
+            new_package = Package.objects.first()
         self.assertEqual(old_package.id, new_package.id, 'Package ID is not same')
         self.assertEqual(name, new_package.name, 'Package name differs')
         self.assertNotEqual(old_package.name, new_package.name, 'Package name didnt change')
@@ -89,6 +93,8 @@ class PackageCRUD(TestCase):
         sleep(1)
 
         new_package = Package.objects.first()
+        if new_package is None:
+            new_package = Package.objects.first()
         self.assertIsNone(new_package, 'Unable to delete package')
         pass
 
