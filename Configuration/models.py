@@ -13,12 +13,12 @@ class PaymentMethod(models.Model):
         DEVELOPMENT = 'dev', _('Development')
         PRODUCTION = 'prod', _('Production')
 
-    provider = models.CharField(max_length=15, choices=PaymentProvider.choices, default=PaymentProvider.STRIPE)
-    secret_key = models.CharField(max_length=150, null=False, default=None, unique=True)
-    client_key = models.CharField(max_length=150, null=False, default=None, unique=True)
+    provider = models.CharField(max_length=15, choices=PaymentProvider.choices, default=PaymentProvider.STRIPE, verbose_name='Payment Provider', help_text='Select the payment provider of your choice')
+    secret_key = models.CharField(max_length=150, null=False, default=None, unique=True, verbose_name='Secret API Key', help_text='Secret API key of the your payment gateway')
+    client_key = models.CharField(max_length=150, null=False, default=None, unique=True, verbose_name='Client API Key', help_text='Client / Publishable API key of the your payment gateway')
     environment = models.CharField(max_length=4, null=False, blank=True, default=PaymentEnvironment.DEVELOPMENT, choices=PaymentEnvironment.choices, help_text='Required for PayPal')
-    # TODO: add intuitive help message
-    is_active = models.BooleanField(default=False, null=False, blank=True, help_text='Custom message', verbose_name='Mark as Active')
+    is_active = models.BooleanField(default=False, null=False, blank=True, help_text='Whether to use this payment provider configuration or not. You can have only one type of provider active at a '
+                                                                                     'time.', verbose_name='Mark as Active')
     wh_id = models.CharField(max_length=50, null=True, blank=True, verbose_name='Webhook ID')
 
     def __str__(self):
