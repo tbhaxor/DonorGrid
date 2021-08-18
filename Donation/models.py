@@ -17,4 +17,8 @@ class Donation(models.Model):
     on_behalf_of = models.CharField(max_length=256, null=True, default='', blank=True)
     note = models.CharField(max_length=1024, null=True, default='', blank=True)
     custom_data = models.JSONField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Donation'
+        verbose_name_plural = 'Donations'
     pass
