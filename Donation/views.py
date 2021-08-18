@@ -112,8 +112,8 @@ def create_donation(request: HttpRequest):
         return HttpResponsePermanentRedirect(redirect_to=redirect_url)
     elif payment_method.provider == PaymentMethod.PaymentProvider.STRIPE:
         try:
-            rz_token = request.POST.get('token', None)
-            if rz_token is None:
+            token = request.POST.get('token', None)
+            if token is None:
                 donation.delete()
                 return JsonResponse(data={'success': False, 'message': 'Payment method token required'})
 
@@ -122,7 +122,7 @@ def create_donation(request: HttpRequest):
                                                   currency=donation.currency.lower(),
                                                   confirm=True,
                                                   receipt_email=donor.email,
-                                                  payment_method=rz_token,
+                                                  payment_method=token,
                                                   capture_method='automatic',
                                                   return_url=settings.BASE_URL + reverse('callback:stripe_confirm') + '?' + urlencode({
                                                       'donation_id': donation.id,
@@ -145,18 +145,18 @@ def create_donation(request: HttpRequest):
         pass
     else:
         try:
-            rz_token = request.POST.get('token', None)
-            if rz_token is None:
+            token = request.POST.get('token', None)
+            if token is None:
                 donation.delete()
                 return JsonResponse(data={'success': False, 'message': 'Payment method token required'})
             client: RZPayment = Client(auth=(payment_method.client_key, payment_method.secret_key)).payment
-            rz_payment: dict = client.fetch(rz_token)
+            rz_payment: dict = client.fetch(token)
             if rz_payment.get('status') != 'authorized':
                 donation.delete()
                 return JsonResponse(data={'success': False, 'message': 'Unprocessable payment token passed'})
 
-            client.capture(rz_token, rz_payment.get('amount'), {'currency': rz_payment.get('currency')})
-            donation.txn_id = rz_token
+            client.capture(token, rz_payment.get('amount'), {'currency': rz_payment.get('currency')})
+            donation.txn_id = token
             donation.is_completed = True
             donation.save()
         except BadRequestError as e:
