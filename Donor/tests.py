@@ -38,15 +38,13 @@ class DonorModelTest(TestCase):
         return donor
 
     def testUpdate(self):
-        donor = self.testCreation()
-        old_name = donor.first_name
+        old_donor = self.testCreation()
         self.data['first_name'] = self.fake.first_name()
 
-        donor.first_name = self.data['first_name']
-        donor.save()
+        Donor.objects.first().update(**self.data)
 
-        self.assertNotEqual(old_name, donor.first_name)
-        self.assertEqual(donor.first_name, self.data['first_name'])
+        new_donor: Donor = Donor.objects.first()
+        self.assertNotEqual(new_donor.first_name, old_donor.first_name)
         pass
 
     def testDelete(self):
