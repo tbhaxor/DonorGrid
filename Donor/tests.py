@@ -41,7 +41,7 @@ class DonorModelTest(TestCase):
         old_donor = self.testCreation()
         self.data['first_name'] = self.fake.first_name()
 
-        Donor.objects.first().update(**self.data)
+        Donor.objects.filter(id=old_donor.id).update(**self.data)
 
         new_donor: Donor = Donor.objects.first()
         self.assertNotEqual(new_donor.first_name, old_donor.first_name)
