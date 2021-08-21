@@ -41,9 +41,6 @@ def create_donation(request: HttpRequest):
         'phone_number': request.POST.get('phone_number', None)
     })
 
-    if is_created:
-        send_webhook_event(Automation.EventChoice.ON_DONOR_CREATE, donor=donor)
-
     custom_fields = {}
     raw_fields: dict = json.loads(b64decode(request.POST.get('custom_data', 'e30=')).decode())
     for k, v in raw_fields.items():
@@ -53,6 +50,9 @@ def create_donation(request: HttpRequest):
     custom_fields = custom_fields if custom_fields.keys() else None
 
     donation = Donation(donor=donor, package=package, on_behalf_of=request.POST.get('on_behalf_of', ''), note=request.POST.get('note', ''), custom_data=custom_fields)
+    if is_created:
+        send_webhook_event(Automation.EventChoice.ON_DONOR_CREATE, donation=donation)
+
     if package is None:
         donation.currency = request.POST.get('currency', 'USD')
         donation.amount = float(request.POST['amount'])
@@ -170,11 +170,11 @@ def create_donation(request: HttpRequest):
             donation.is_completed = True
             donation.save()
             send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_SUCCESS)
-            send_webhook_event(SMTPServer.EventChoices.ON_PAYMENT_SUCCESS, donor=donor, donation=donation, package=package)
+            send_webhook_event(SMTPServer.EventChoices.ON_PAYMENT_SUCCESS, donation=donation)
         except BadRequestError as e:
             donation.delete()
             send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_FAIL)
-            send_webhook_event(SMTPServer.EventChoices.ON_PAYMENT_FAIL, donor=donor, donation=donation, package=package, fail_reason=e)
+            send_webhook_event(SMTPServer.EventChoices.ON_PAYMENT_FAIL, donation=donation, fail_reason=e)
             return JsonResponse(data={'success': False, 'message': e.args[0]})
 
     send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_SUCCESS)
