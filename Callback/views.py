@@ -5,8 +5,8 @@ from django.views.decorators.csrf import csrf_exempt
 from paypalrestsdk.api import Api
 from paypalrestsdk.payments import Payment
 from Donation.models import Donation
-from Configuration.models import PaymentMethod, SMTPServer
-from Configuration.utils import send_email
+from Configuration.models import PaymentMethod, SMTPServer, Automation
+from Configuration.utils import send_email, send_webhook_event
 
 
 # Create your views here.
@@ -36,6 +36,7 @@ def paypal_execute(request: HttpRequest):
             message = paypal_payment.error['details'][0]['issue']
 
         send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_FAIL)
+        send_webhook_event(Automation.EventChoice.ON_PAYMENT_FAIL, package=donation.package, donor=donation.donor, donation=donation, fail_reason=message)
         return HttpResponseRedirect(redirect_to=settings.DONATION_REDIRECT_URL + '?' + urlencode({
             'success': 'false',
             'message': message
@@ -45,6 +46,7 @@ def paypal_execute(request: HttpRequest):
     donation.save()
 
     send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_SUCCESS)
+    send_webhook_event(Automation.EventChoice.ON_PAYMENT_SUCCESS, package=donation.package, donor=donation.donor, donation=donation)
     return HttpResponseRedirect(redirect_to=settings.DONATION_REDIRECT_URL + '?' + urlencode({
         'success': 'true',
         'message': 'Donation completed. Thanks for your generosity'
@@ -70,6 +72,7 @@ def stripe_confirm(request: HttpRequest):
     donation.save()
 
     send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_SUCCESS)
+    send_webhook_event(Automation.EventChoice.ON_PAYMENT_SUCCESS, package=donation.package, donor=donation.donor, donation=donation)
     return HttpResponseRedirect(redirect_to=settings.DONATION_REDIRECT_URL + '?' + urlencode({
         'success': 'true',
         'message': 'Donation completed. Thanks for your generosity'
