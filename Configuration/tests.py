@@ -50,7 +50,7 @@ class PaymentMethodTesting(TestCase):
         self.assertIsNone(ctx.get('errors'), 'Request failed with errors')
         self.assertEqual(len(messages), 2, 'CI tests tampered')
         self.assertEqual(messages[0].message, 'CI Test Run', 'CI environment not set')
-        self.assertRegex(messages[1].message, r"^The Payment Method Configuration.+was added successfully.$", 'Payment method add message is incorrect')
+        self.assertRegex(messages[1].message, r"^The Payment Method.+was added successfully.$", 'Payment method add message is incorrect')
 
         payment_method = PaymentMethod.objects.first()
         self.assertIsNotNone(payment_method, 'Payment method is not stored in DB')
@@ -170,7 +170,7 @@ class PaymentMethodTesting(TestCase):
         self.assertEqual(len(messages), 2, 'Exactly two messages are required')
         self.assertEqual(messages[0].message, 'Add a webhook URL with endpoint "<strong>%s/webhooks/razorpay</strong>" in your razorpay dashboard' % settings.BASE_URL,
                          'Webhook message in razorpay is not expected')
-        self.assertRegex(messages[1].message, r"^The Payment Method Configuration.+was added successfully.$", 'Payment method add message is incorrect')
+        self.assertRegex(messages[1].message, r"^The Payment Method.+was added successfully.$", 'Payment method add message is incorrect')
         pass
 
     def testPaymentUpdate(self):
