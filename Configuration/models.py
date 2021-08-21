@@ -28,8 +28,8 @@ class PaymentMethod(models.Model):
         return self.__str__()
 
     class Meta:
-        verbose_name = 'Payment Method Configuration'
-        verbose_name_plural = 'Payment Method Configurations'
+        verbose_name = 'Payment Method'
+        verbose_name_plural = 'Payment Methods'
     pass
 
 
@@ -94,6 +94,6 @@ class SMTPServer(models.Model):
         return self.__str__()
 
     class Meta:
-        verbose_name = 'SMTP Server Config'
-        verbose_name_plural = 'SMTP Server Configs'
+        verbose_name = 'SMTP Server'
+        verbose_name_plural = 'SMTP Servers'
     pass
