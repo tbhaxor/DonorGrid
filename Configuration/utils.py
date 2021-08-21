@@ -57,6 +57,9 @@ def send_email(email, event):
 
     # wait for completion
     wait(fut, return_when=ALL_COMPLETED)
+
+    # shutdown pool
+    pool.shutdown()
     pass
 
 
@@ -129,4 +132,7 @@ def send_webhook_event(event, package: Package = None, donation: Donation = None
 
     # wait for futures to finish
     wait(futures, return_when=ALL_COMPLETED)
+
+    # shutdown pool
+    pool.shutdown()
     pass
