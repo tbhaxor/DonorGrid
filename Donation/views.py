@@ -140,7 +140,7 @@ def create_donation(request: HttpRequest):
             else:
                 donation.is_completed = stripe_payment['status'] == 'succeeded'
                 donation.save()
-                send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_FAIL if donation.is_completed else SMTPServer.EventChoices.ON_PAYMENT_SUCCESS)
+                send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_FAIL if not donation.is_completed else SMTPServer.EventChoices.ON_PAYMENT_SUCCESS)
         except (StripeError, CardError, InvalidRequestError) as e:
             donation.delete()
             send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_FAIL)
