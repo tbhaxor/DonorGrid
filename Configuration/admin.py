@@ -2,11 +2,12 @@ from django.contrib import admin
 from django.forms import ModelForm
 from django.conf import settings
 from django.utils.html import format_html
-from .models import PaymentMethod, CustomField, SMTPServer
+from .models import PaymentMethod, CustomField, SMTPServer, Automation
 from stripe.api_resources import WebhookEndpoint
 from paypalrestsdk.api import Api
 from paypalrestsdk.notifications import Webhook
 from urllib.parse import urljoin
+import requests as r
 import os
 
 
@@ -146,4 +147,75 @@ class SMTPServerRegister(admin.ModelAdmin):
             }
         )
     )
+    pass
+
+
+class AutomationFrom(ModelForm):
+    def clean(self):
+        test_zapier = self.data.get('service') == Automation.ServiceChoice.ZAPIER and not self.data.get('webhook_url').startswith('https://hooks.zapier.com/hooks/')
+        test_pabbly = self.data.get('service') == Automation.ServiceChoice.PABBLY_CONNECT and not self.data.get('webhook_url').startswith('https://connect.pabbly.com/')
+        if test_zapier or test_pabbly:
+            self.add_error('webhook_url', 'Invalid url hostname')
+        return super(AutomationFrom, self).clean()
+
+    class Meta:
+        model = Automation
+        fields = '__all__'
+    pass
+
+
+@admin.register(Automation)
+class AutomationRegister(admin.ModelAdmin):
+    form = AutomationFrom
+    list_display = ['name', 'service', 'event']
+
+    fieldsets = (
+        (
+            'Automation Configuration', {
+                'description': 'Configure your zapier / pabbly_connect automation via webhook app. If you are a zapier user, you need to subscribe to paid plan',
+                'fields': ('name', ('service', 'event'), 'webhook_url')
+            },
+        ),
+    )
+
+    def save_model(self, request, obj: Automation, form, change):
+        if not change:
+            if obj.event == Automation.EventChoice.ON_DONOR_CREATE:
+                body = {
+                    'first_name': 'John',
+                    'last_name': 'Doe',
+                    'email': 'john@example.com',
+                    'phone_number': '1234567890',
+                    'is_anonymous': True,
+                    'full_name': 'Jon Doe'
+                }
+            elif obj.event == Automation.EventChoice.ON_PAYMENT_SUCCESS:
+                body = {
+                    'donor_email': 'john@example.com',
+                    'amount': 20,
+                    'package_name': '500 USD for flood relief',
+                    'currency': 'USD',
+                    'transaction_id': 'TXN1234',
+                    'on_behalf_of': 'Mike Uchiha',
+                    'custom_data': {
+                        'dob': '1990-03-03'
+                    },
+                    'payment_provider': 'stripe'
+                }
+            else:
+                body = {
+                    'donor_email': 'john@example.com',
+                    'amount': 20,
+                    'package_name': '500 USD for flood relief',
+                    'currency': 'USD',
+                    'transaction_id': 'TXN1234',
+                    'fail_reason': 'Something went wrong',
+                    'on_behalf_of': 'Mike Uchiha',
+                    'custom_data': {
+                        'dob': '1990-03-03'
+                    },
+                    'payment_provider': 'stripe'
+                }
+            r.post(obj.webhook_url, json=body)
+        return super(AutomationRegister, self).save_model(request, obj, form, change)
     pass
