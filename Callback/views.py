@@ -36,7 +36,7 @@ def paypal_execute(request: HttpRequest):
             message = paypal_payment.error['details'][0]['issue']
 
         send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_FAIL)
-        send_webhook_event(Automation.EventChoice.ON_PAYMENT_FAIL, package=donation.package, donor=donation.donor, donation=donation, fail_reason=message)
+        send_webhook_event(Automation.EventChoice.ON_PAYMENT_FAIL, donation=donation, fail_reason=message)
         return HttpResponseRedirect(redirect_to=settings.DONATION_REDIRECT_URL + '?' + urlencode({
             'success': 'false',
             'message': message
@@ -46,7 +46,7 @@ def paypal_execute(request: HttpRequest):
     donation.save()
 
     send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_SUCCESS)
-    send_webhook_event(Automation.EventChoice.ON_PAYMENT_SUCCESS, package=donation.package, donor=donation.donor, donation=donation)
+    send_webhook_event(Automation.EventChoice.ON_PAYMENT_SUCCESS, donation=donation)
     return HttpResponseRedirect(redirect_to=settings.DONATION_REDIRECT_URL + '?' + urlencode({
         'success': 'true',
         'message': 'Donation completed. Thanks for your generosity'
@@ -72,7 +72,7 @@ def stripe_confirm(request: HttpRequest):
     donation.save()
 
     send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_SUCCESS)
-    send_webhook_event(Automation.EventChoice.ON_PAYMENT_SUCCESS, package=donation.package, donor=donation.donor, donation=donation)
+    send_webhook_event(Automation.EventChoice.ON_PAYMENT_SUCCESS, donation=donation)
     return HttpResponseRedirect(redirect_to=settings.DONATION_REDIRECT_URL + '?' + urlencode({
         'success': 'true',
         'message': 'Donation completed. Thanks for your generosity'
