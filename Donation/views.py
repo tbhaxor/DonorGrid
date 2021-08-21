@@ -2,8 +2,8 @@ import json
 from django.http import JsonResponse, HttpRequest, HttpResponseNotFound, HttpResponseForbidden, HttpResponsePermanentRedirect, HttpResponseNotAllowed
 from django.views.decorators.csrf import csrf_exempt
 from .models import Donor, Donation, Package
-from Configuration.models import PaymentMethod, CustomField, SMTPServer
-from Configuration.utils import send_email
+from Configuration.models import PaymentMethod, CustomField, SMTPServer, Automation
+from Configuration.utils import send_email, send_webhook_event
 from django.conf import settings
 from django.urls import reverse
 from paypalrestsdk.payments import Payment
@@ -33,13 +33,16 @@ def create_donation(request: HttpRequest):
     if package is None and float(request.POST.get('amount', 0)) <= 0:
         return HttpResponseNotFound('Package %s not found' % request.POST['package'])
 
-    donor = Donor.objects.get_or_create(email=request.POST.get('email', None), defaults={
+    donor, is_created = Donor.objects.get_or_create(email=request.POST.get('email', None), defaults={
         'first_name': request.POST.get('first_name', None),
         'last_name': request.POST.get('last_name', None),
         'email': request.POST.get('email', None),
         'is_anonymous': request.POST.get('is_anonymous', 'no') == 'yes',
         'phone_number': request.POST.get('phone_number', None)
-    })[0]
+    })
+
+    if is_created:
+        send_webhook_event(Automation.EventChoice.ON_DONOR_CREATE, donor=donor)
 
     custom_fields = {}
     raw_fields: dict = json.loads(b64decode(request.POST.get('custom_data', 'e30=')).decode())
@@ -141,9 +144,12 @@ def create_donation(request: HttpRequest):
                 donation.is_completed = stripe_payment['status'] == 'succeeded'
                 donation.save()
                 send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_FAIL if not donation.is_completed else SMTPServer.EventChoices.ON_PAYMENT_SUCCESS)
+                send_webhook_event(SMTPServer.EventChoices.ON_PAYMENT_FAIL if not donation.is_completed else SMTPServer.EventChoices.ON_PAYMENT_SUCCESS, donor=donor,
+                                   donation=donation, package=package, fail_reason=stripe_payment.get('last_payment_error').get('message') if not donation.is_completed else None)
         except (StripeError, CardError, InvalidRequestError) as e:
             donation.delete()
             send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_FAIL)
+            send_webhook_event(SMTPServer.EventChoices.ON_PAYMENT_FAIL, donor=donor, donation=donation, package=package, fail_reason=e)
             return JsonResponse(data={'success': False, 'message': e.user_message})
         pass
     else:
@@ -164,9 +170,11 @@ def create_donation(request: HttpRequest):
             donation.is_completed = True
             donation.save()
             send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_SUCCESS)
+            send_webhook_event(SMTPServer.EventChoices.ON_PAYMENT_SUCCESS, donor=donor, donation=donation, package=package)
         except BadRequestError as e:
             donation.delete()
             send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_FAIL)
+            send_webhook_event(SMTPServer.EventChoices.ON_PAYMENT_FAIL, donor=donor, donation=donation, package=package, fail_reason=e)
             return JsonResponse(data={'success': False, 'message': e.args[0]})
 
     send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_SUCCESS)
