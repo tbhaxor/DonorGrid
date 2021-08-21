@@ -5,10 +5,11 @@ from django.contrib.auth.models import User
 from django.shortcuts import reverse
 from django.conf import settings
 from django.db.utils import IntegrityError
+from django.db import transaction
 from faker import Faker
 from faker.providers import internet, profile, python, lorem, misc
 from time import time
-from .models import PaymentMethod, CustomField, SMTPServer
+from .models import PaymentMethod, CustomField, SMTPServer, Automation
 from typing import List
 import os
 import functools
@@ -50,7 +51,7 @@ class PaymentMethodTesting(TestCase):
         self.assertIsNone(ctx.get('errors'), 'Request failed with errors')
         self.assertEqual(len(messages), 2, 'CI tests tampered')
         self.assertEqual(messages[0].message, 'CI Test Run', 'CI environment not set')
-        self.assertRegex(messages[1].message, r"^The Payment Method Configuration.+was added successfully.$", 'Payment method add message is incorrect')
+        self.assertRegex(messages[1].message, r"^The Payment Method.+was added successfully.$", 'Payment method add message is incorrect')
 
         payment_method = PaymentMethod.objects.first()
         self.assertIsNotNone(payment_method, 'Payment method is not stored in DB')
@@ -170,7 +171,7 @@ class PaymentMethodTesting(TestCase):
         self.assertEqual(len(messages), 2, 'Exactly two messages are required')
         self.assertEqual(messages[0].message, 'Add a webhook URL with endpoint "<strong>%s/webhooks/razorpay</strong>" in your razorpay dashboard' % settings.BASE_URL,
                          'Webhook message in razorpay is not expected')
-        self.assertRegex(messages[1].message, r"^The Payment Method Configuration.+was added successfully.$", 'Payment method add message is incorrect')
+        self.assertRegex(messages[1].message, r"^The Payment Method.+was added successfully.$", 'Payment method add message is incorrect')
         pass
 
     def testPaymentUpdate(self):
@@ -324,8 +325,9 @@ class SMTPServerTesting(TestCase):
         except KeyError:
             self.payload[field] = None
 
-        with self.assertRaisesMessage(IntegrityError, 'NOT NULL constraint failed: Configuration_smtpserver.%s' % field):
-            SMTPServer.objects.create(**self.payload)
+        with transaction.atomic():
+            with self.assertRaisesMessage(IntegrityError, 'NOT NULL constraint failed: Configuration_smtpserver.%s' % field):
+                SMTPServer.objects.create(**self.payload)
         pass
 
     def testHostNameNullValidator(self):
@@ -375,4 +377,150 @@ class SMTPServerTesting(TestCase):
         count = SMTPServer.objects.count()
         self.assertEqual(count, 0, 'Unable to delete object from db')
         pass
+    pass
+
+
+class AutomationTesting(TestCase):
+    def setUp(self) -> None:
+        Faker.seed(time())
+        self.fake = Faker()
+        self.fake.add_provider(internet)
+        self.fake.add_provider(profile)
+        self.fake.add_provider(python)
+
+        credentials = {
+            'username': self.fake.profile()['username'],
+            'password': self.fake.mac_address()
+        }
+        user = User.objects.create_superuser(**credentials)
+        user.set_password(credentials['password'])
+
+        self.client = Client(enforce_csrf_checks=False)
+        self.assertTrue(self.client.login(**credentials), 'Login failed')
+
+        self.payload = {
+            'name': self.fake.simple_profile()['name'],
+            'webhook_url': 'https://hooks.zapier.com/hooks/',
+        }
+        pass
+
+    def testCreation(self):
+        automation = Automation.objects.create(**self.payload)
+
+        self.assertIsNotNone(automation, 'Unable to store the object in db')
+        self.assertEqual(automation.name, self.payload['name'], 'Name does not match')
+        self.assertEqual(automation.webhook_url, self.payload['webhook_url'], 'Webhook URL does not match')
+        self.assertEqual(automation.event, Automation.EventChoice.ON_DONOR_CREATE, 'Default event type %s not set' % Automation.EventChoice.ON_DONOR_CREATE)
+        self.assertEqual(automation.service, Automation.ServiceChoice.ZAPIER, 'Default automation service %s not set' % Automation.ServiceChoice.ZAPIER)
+
+        return automation
+
+    def fieldNullCheck(self, field):
+        try:
+            del self.payload[field]
+        except KeyError:
+            self.payload[field] = None
+
+        with transaction.atomic():
+            with self.assertRaisesMessage(IntegrityError, 'NOT NULL constraint failed: Configuration_automation.%s' % field):
+                Automation.objects.create(**self.payload)
+        pass
+
+    def testNameFieldNullValidation(self):
+        self.fieldNullCheck('name')
+        pass
+
+    def testWebhookUrlFieldNullValidation(self):
+        self.fieldNullCheck('webhook_url')
+        pass
+
+    def testEventFieldNullValidation(self):
+        self.fieldNullCheck('event')
+        pass
+
+    def testServiceFieldNullValidation(self):
+        self.fieldNullCheck('service')
+        pass
+
+    def testWrongEventTypeValidation(self):
+        self.payload['event'] = Automation.ServiceChoice.ZAPIER
+        r = self.client.post(reverse('admin:Configuration_automation_add'), data=self.payload, follow=False)
+        ctx: Context = r.context
+
+        self.assertIsNotNone(ctx, 'Response context is none')
+        self.assertIsNotNone(ctx.get('errors'), 'Response does not contain error in wrong payload')
+        errors = ctx.get('errors').data
+        errors = functools.reduce(operator.iconcat, errors, [])
+
+        self.assertGreaterEqual(len(errors), 1, 'No error found in the list')
+        self.assertIn('Select a valid choice. zapier is not one of the available choices.', errors, 'Choice validation error not found')
+        pass
+
+    def testWrongServiceTypeValidation(self):
+        self.payload['service'] = Automation.EventChoice.ON_DONOR_CREATE
+        r = self.client.post(reverse('admin:Configuration_automation_add'), data=self.payload, follow=False)
+        ctx: Context = r.context
+
+        self.assertIsNotNone(ctx, 'Response context is none')
+        self.assertIsNotNone(ctx.get('errors'), 'Response does not contain error in wrong payload')
+        errors = ctx.get('errors').data
+        errors = functools.reduce(operator.iconcat, errors, [])
+
+        self.assertGreaterEqual(len(errors), 1, 'No error found in the list')
+        self.assertIn('Select a valid choice. on_donor_create is not one of the available choices.', errors, 'Choice validation error not found')
+        pass
+
+    def testWrongServiceWebhookUrlValidation(self):
+        self.payload['webhook_url'] = 'https://gibberish.com'
+        self.payload['service'] = Automation.ServiceChoice.ZAPIER
+        r = self.client.post(reverse('admin:Configuration_automation_add'), data=self.payload, follow=False)
+        ctx: Context = r.context
+
+        self.assertIsNotNone(ctx, 'Response context is none')
+        self.assertIsNotNone(ctx.get('errors'), 'Response does not contain error in wrong payload')
+
+        errors = ctx.get('errors').data
+        errors = functools.reduce(operator.iconcat, errors, [])
+
+        self.assertGreaterEqual(len(errors), 1, 'No error found in the list')
+        self.assertIn('Invalid url hostname', errors, 'Choice validation error not found')
+        pass
+
+    def testWebhookUrlFieldType(self):
+        self.payload['webhook_url'] = 'gibberish'
+        r = self.client.post(reverse('admin:Configuration_automation_add'), data=self.payload, follow=False)
+        ctx: Context = r.context
+
+        self.assertIsNotNone(ctx, 'Response context is none')
+        self.assertIsNotNone(ctx.get('errors'), 'Response does not contain error in wrong payload')
+
+        errors = ctx.get('errors').data
+        errors = functools.reduce(operator.iconcat, errors, [])
+
+        self.assertGreaterEqual(len(errors), 1, 'No error found in the list')
+        self.assertIn('Enter a valid URL.', errors, 'URL validation failed')
+        pass
+
+    def testUpdate(self):
+        old_automation = self.testCreation()
+
+        self.payload['name'] = self.fake.simple_profile()['name']
+        Automation.objects.filter(id=old_automation.id).update(**self.payload)
+
+        new_automation: Automation = Automation.objects.first()
+        self.assertIsNotNone(new_automation, 'Object deleted from db after update')
+        self.assertNotEqual(old_automation.name, new_automation.name, 'Updated field did not change')
+        self.assertEqual(old_automation.webhook_url, new_automation.webhook_url, 'Untouched fields also changed')
+        pass
+
+    def testDelete(self):
+        automation = self.testCreation()
+        automation.delete()
+
+        count = Automation.objects.count()
+        self.assertEqual(count, 0, 'Object is not removed from db')
+        pass
+
+    def tearDown(self):
+        self.client.logout()
     pass

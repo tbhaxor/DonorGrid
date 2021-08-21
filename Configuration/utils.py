@@ -5,7 +5,10 @@ from email.mime.multipart import MIMEMultipart
 from concurrent.futures import ThreadPoolExecutor, wait, ALL_COMPLETED
 from smtplib import SMTPConnectError, SMTPAuthenticationError
 from typing import List
-from .models import SMTPServer
+from Donation.models import Donation
+from Donor.models import Donor
+import requests as r
+from .models import SMTPServer, Automation
 
 
 def _do_send_email(server: SMTPServer, email: str):
@@ -53,4 +56,81 @@ def send_email(email, event):
 
     # wait for completion
     wait(fut, return_when=ALL_COMPLETED)
+
+    # shutdown pool
+    pool.shutdown()
+    pass
+
+
+def _do_send_webhook_event_on_donor_create(webhook_url: str, donor_details: Donor):
+    try:
+        r.post(webhook_url, json={
+            'first_name': donor_details.first_name,
+            'last_name': donor_details.last_name,
+            'email': donor_details.last_name,
+            'phone_number': donor_details.phone_number,
+            'is_anonymous': donor_details.is_anonymous,
+            'full_name': donor_details.full_name,
+        })
+    except Exception:
+        pass
+    pass
+
+
+def _do_send_webhook_event_on_payment_success(webhook_url: str, donation_details: Donation):
+    try:
+        r.post(webhook_url, json={
+            'donor_email': donation_details.donor.email,
+            'amount': donation_details.amount,
+            'package_name': donation_details.package.name, 'currency': donation_details.currency,
+            'transaction_id': donation_details.txn_id,
+            'on_behalf_of': donation_details.on_behalf_of,
+            'custom_data': donation_details.custom_data,
+            'payment_provider': donation_details.provider
+        })
+    except Exception:
+        pass
+    pass
+
+
+def _do_send_webhook_event_on_payment_fail(webhook_url: str, donation_details: Donation, fail_reason):
+    try:
+        r.post(webhook_url, json={
+            'donor_email': donation_details.donor.email,
+            'amount': donation_details.amount,
+            'package_name': donation_details.package.name,
+            'currency': donation_details.currency,
+            'transaction_id': donation_details.txn_id,
+            'fail_reason': fail_reason,
+            'on_behalf_of': donation_details.on_behalf_of,
+            'custom_data': donation_details.custom_data,
+            'payment_provider': donation_details.provider
+        })
+    except Exception:
+        pass
+    pass
+
+
+def send_webhook_event(event, donation: Donation = None, fail_reason: str = None):
+    # fetch automation config based on event
+    automations: List[Automation] = Automation.objects.filter(event=event).all()
+
+    # create pool
+    futures = []
+    pool = ThreadPoolExecutor(max_workers=3)
+
+    for automation in automations:
+        if automation.event == Automation.EventChoice.ON_DONOR_CREATE:
+            futures.append(pool.submit(_do_send_webhook_event_on_donor_create, automation.webhook_url, donation.donor))
+        elif automation.event == Automation.EventChoice.ON_PAYMENT_SUCCESS:
+            futures.append(pool.submit(_do_send_webhook_event_on_payment_success, automation.webhook_url, donation))
+        else:
+            futures.append(pool.submit(_do_send_webhook_event_on_payment_fail, automation.webhook_url, donation, fail_reason))
+        pass
+
+    # wait for futures to finish
+    wait(futures, return_when=ALL_COMPLETED)
+
+    # shutdown pool
+    pool.shutdown()
     pass
