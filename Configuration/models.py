@@ -110,7 +110,7 @@ class Automation(models.Model):
         ON_DONOR_CREATE = 'on_donor_create', _('On Donor Create')
 
     name = models.CharField(max_length=50, verbose_name='Webhook Entry Name', help_text='Enter a human-friendly webhook name', null=False, blank=False, default=None)
-    webhook_url = models.URLField(verbose_name='Webhook URL')
+    webhook_url = models.URLField(verbose_name='Webhook URL', null=False, blank=False, default=None)
     event = models.CharField(max_length=20, verbose_name='Trigger Event', choices=EventChoice.choices, default=EventChoice.ON_DONOR_CREATE, null=False, blank=False, help_text='Select when you want '
                                                                                                                                                                                'to trigger this '
                                                                                                                                                                                'webhook')
