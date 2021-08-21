@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import reverse
 from django.conf import settings
 from django.db.utils import IntegrityError
+from django.db import transaction
 from faker import Faker
 from faker.providers import internet, profile, python, lorem, misc
 from time import time
@@ -324,8 +325,9 @@ class SMTPServerTesting(TestCase):
         except KeyError:
             self.payload[field] = None
 
-        with self.assertRaisesMessage(IntegrityError, 'NOT NULL constraint failed: Configuration_smtpserver.%s' % field):
-            SMTPServer.objects.create(**self.payload)
+        with transaction.atomic():
+            with self.assertRaisesMessage(IntegrityError, 'NOT NULL constraint failed: Configuration_smtpserver.%s' % field):
+                SMTPServer.objects.create(**self.payload)
         pass
 
     def testHostNameNullValidator(self):
