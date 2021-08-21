@@ -97,3 +97,34 @@ class SMTPServer(models.Model):
         verbose_name = 'SMTP Server'
         verbose_name_plural = 'SMTP Servers'
     pass
+
+
+class Automation(models.Model):
+    class ServiceChoice(models.TextChoices):
+        ZAPIER = 'zapier', _('Zapier')
+        PABBLY_CONNECT = 'paybbly_connect', _('Pabbly Connect')
+
+    class EventChoice(models.TextChoices):
+        ON_PAYMENT_SUCCESS = 'on_payment_success', _('On Payment Success')
+        ON_PAYMENT_FAIL = 'on_payment_fail', _('On Payment Fail')
+        ON_DONOR_CREATE = 'on_donor_create', _('On Donor Create')
+
+    name = models.CharField(max_length=50, verbose_name='Webhook Entry Name', help_text='Enter a human-friendly webhook name')
+    webhook_url = models.URLField(verbose_name='Webhook URL')
+    event = models.CharField(max_length=20, verbose_name='Trigger Event', choices=EventChoice.choices, default=EventChoice.ON_DONOR_CREATE, null=False, blank=False, help_text='Select when you want '
+                                                                                                                                                                               'to trigger this '
+                                                                                                                                                                               'webhook')
+    service = models.CharField(max_length=20, verbose_name='Automation Service', choices=ServiceChoice.choices, default=ServiceChoice.ZAPIER, null=False, blank=False, help_text='Select the '
+                                                                                                                                                                                 'automation service '
+                                                                                                                                                                                 'for integration')
+
+    def __str__(self):
+        return 'Webhook %s' % self.name
+
+    def __repr__(self):
+        return self.__str__()
+
+    class Meta:
+        verbose_name = 'Automation Service'
+        verbose_name_plural = 'Automation Services'
+    pass
