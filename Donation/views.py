@@ -163,6 +163,7 @@ def create_donation(request: HttpRequest):
             donation.txn_id = token
             donation.is_completed = True
             donation.save()
+            send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_SUCCESS)
         except BadRequestError as e:
             donation.delete()
             send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_FAIL)
