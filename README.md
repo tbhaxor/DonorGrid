@@ -18,8 +18,8 @@ I have been inspired for this project from https://youwecan.org. It not only sol
 - [x] Full admin panel whitelabel
 - [ ] Integrations
   - [x] SMTP for sending emails
-  - [ ] Pabbly Connect
-  - [ ] Zapier
+  - [x] Pabbly Connect
+  - [x] Zapier
   - [ ] Google and Pixel analytics
 - [ ] Recurring donations
 - [ ] Charts and analytics on admin panel
