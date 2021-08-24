@@ -42,15 +42,52 @@
         <div class="relative pt-6">
             <div x-data="{ isMenuOpen: false }" @keydown.escape="isMenuOpen = false">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6">
-                    <nav class="relative flex items-center justify-between sm:h-10 md:justify-center" aria-label="Global">
+                    <nav class="relative flex items-center justify-between sm:h-10 md:justify-center"
+                        aria-label="Global">
                         <div class="flex items-center flex-1 md:absolute md:inset-y-0 md:left-0">
                             <div class="flex items-center justify-between w-full md:w-auto">
                                 <a href="#">
-                                    <span class="sr-only">Workflow</span>
-                                    <img class="h-8 w-auto sm:h-10" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="">
+                                    <svg class="h-8 w-auto sm:h-10" viewBox="0 0 702 169" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <g clip-path="url(#clip0)">
+                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                d="M164.35 111.59C160.208 123.573 153.433 134.475 144.525 143.496C135.616 152.517 124.8 159.428 112.87 163.72V111.59H164.35Z"
+                                                fill="#685FFF" />
+                                            <path d="M0 0H56V55.79H0V0Z" fill="#4F46E5" />
+                                            <path d="M0 55.79H56V111.59H0V55.79Z" fill="#5C53F1" />
+                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                d="M0 111.59V168.37H56V111.59H0Z" fill="#6A62FA" />
+                                            <path d="M56 55.79H113V111.59H56V55.79Z" fill="#6B62F9" />
+                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                d="M113.06 163.47C103.904 166.723 94.257 168.38 84.54 168.37H56V111.59H113L113.06 163.47Z"
+                                                fill="#5F55FA" />
+                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                d="M164.16 55.79C170.611 73.8104 170.734 93.4901 164.51 111.59H113.06V55.79H164.16Z"
+                                                fill="#776FFD" />
+                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                d="M84.54 1.15943e-05H56V55.79H113V4.91001C103.864 1.65575 94.2378 -0.00506311 84.54 1.15943e-05Z"
+                                                fill="#574DF1" />
+                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                d="M113.06 4.90997C124.799 9.10334 135.467 15.8386 144.301 24.6343C153.135 33.43 159.916 44.0688 164.16 55.79H113.06V4.90997Z"
+                                                fill="#5F55FA" />
+                                            <path
+                                                d="M168 69.36C156.37 68.2 158.74 90.93 149.74 111.96C151.477 102.215 151.426 92.2363 149.59 82.51C135.87 81.13 142.5 114.84 121.88 137.73C119.131 140.784 115.546 142.964 111.57 144H111.51C102.25 146.41 98.61 146.9 87.17 145.53L70.66 141.1C70.66 141.1 106.66 120.68 95.95 94.71C84.45 114.8 42.29 122.28 24.95 129.04C-2.37 139.73 0.18 158.26 0 168.4H78.62C81.62 168.08 112.84 173.68 141.84 146.1C178.22 113.46 168 69.36 168 69.36Z"
+                                                fill="#B6B1FF" />
+                                        </g>
+                                        <path
+                                            d="M211.592 115V48.9844H234.59C241.393 48.9844 247.497 50.2865 252.9 52.8906C258.337 55.4948 262.633 59.3197 265.791 64.3652C268.981 69.3783 270.576 75.1888 270.576 81.7969C270.576 88.3073 268.997 94.1016 265.84 99.1797C262.682 104.258 258.369 108.164 252.9 110.898C247.464 113.633 241.361 115 234.59 115H211.592ZM228.779 99.5215H234.492C239.863 99.5215 244.29 97.9427 247.773 94.7852C251.257 91.6276 252.998 87.2982 252.998 81.7969C252.998 76.1654 251.273 71.901 247.822 69.0039C244.404 66.0742 239.961 64.6094 234.492 64.6094H228.779V99.5215ZM280.537 103.379C278.128 99.3424 276.924 94.8828 276.924 90C276.924 85.1172 278.128 80.6738 280.537 76.6699C282.979 72.6335 286.283 69.4759 290.449 67.1973C294.616 64.9186 299.189 63.7793 304.17 63.7793C309.118 63.7793 313.675 64.9186 317.842 67.1973C322.008 69.4759 325.312 72.6335 327.754 76.6699C330.228 80.7064 331.465 85.1497 331.465 90C331.465 94.8503 330.228 99.2936 327.754 103.33C325.312 107.367 322.008 110.524 317.842 112.803C313.675 115.081 309.118 116.221 304.17 116.221C299.189 116.221 294.616 115.081 290.449 112.803C286.283 110.524 282.979 107.383 280.537 103.379ZM294.551 90C294.551 93.0924 295.446 95.599 297.236 97.5195C299.027 99.4401 301.37 100.4 304.268 100.4C307.002 100.4 309.281 99.4401 311.104 97.5195C312.926 95.5664 313.838 93.0599 313.838 90C313.838 86.9727 312.926 84.4824 311.104 82.5293C309.281 80.5762 307.002 79.5996 304.268 79.5996C301.37 79.5996 299.027 80.5762 297.236 82.5293C295.446 84.4499 294.551 86.9401 294.551 90ZM340.205 115V65H355.879V69.1016C359.655 65.5534 364.359 63.7793 369.99 63.7793C375.817 63.7793 380.456 65.6348 383.906 69.3457C387.357 73.0566 389.082 78.0046 389.082 84.1895V115H371.895V86.6797C371.895 84.4661 371.195 82.6921 369.795 81.3574C368.428 79.9902 366.686 79.3066 364.57 79.3066C362.454 79.3066 360.729 79.9902 359.395 81.3574C358.06 82.6921 357.393 84.4661 357.393 86.6797V115H340.205ZM400.947 103.379C398.538 99.3424 397.334 94.8828 397.334 90C397.334 85.1172 398.538 80.6738 400.947 76.6699C403.389 72.6335 406.693 69.4759 410.859 67.1973C415.026 64.9186 419.6 63.7793 424.58 63.7793C429.528 63.7793 434.085 64.9186 438.252 67.1973C442.419 69.4759 445.723 72.6335 448.164 76.6699C450.638 80.7064 451.875 85.1497 451.875 90C451.875 94.8503 450.638 99.2936 448.164 103.33C445.723 107.367 442.419 110.524 438.252 112.803C434.085 115.081 429.528 116.221 424.58 116.221C419.6 116.221 415.026 115.081 410.859 112.803C406.693 110.524 403.389 107.383 400.947 103.379ZM414.961 90C414.961 93.0924 415.856 95.599 417.646 97.5195C419.437 99.4401 421.781 100.4 424.678 100.4C427.412 100.4 429.691 99.4401 431.514 97.5195C433.337 95.5664 434.248 93.0599 434.248 90C434.248 86.9727 433.337 84.4824 431.514 82.5293C429.691 80.5762 427.412 79.5996 424.678 79.5996C421.781 79.5996 419.437 80.5762 417.646 82.5293C415.856 84.4499 414.961 86.9401 414.961 90ZM460.615 115V65H476.289V70.3223C479.479 66.2533 483.678 64.2188 488.887 64.2188C490.677 64.2188 492.321 64.4792 493.818 65V80.1855H489.717C485.778 80.1855 482.799 81.1296 480.781 83.0176C478.796 84.9056 477.803 87.9655 477.803 92.1973V115H460.615ZM503.486 99.4238C500.329 94.1829 498.75 88.3724 498.75 81.9922C498.75 75.612 500.312 69.8177 503.438 64.6094C506.595 59.3685 510.908 55.2669 516.377 52.3047C521.878 49.3099 527.965 47.8125 534.639 47.8125C540.693 47.8125 546.13 49.082 550.947 51.6211C555.765 54.1276 559.785 57.7572 563.008 62.5098L551.045 72.7148C546.683 66.6276 541.117 63.584 534.346 63.584C528.812 63.584 524.417 65.2767 521.162 68.6621C517.939 72.0475 516.328 76.4909 516.328 81.9922C516.328 87.6562 518.037 92.2298 521.455 95.7129C524.873 99.1634 529.495 100.889 535.322 100.889C541.572 100.889 546.406 98.9193 549.824 94.9805V91.9043H534.443V77.1094H567.012V97.9102C563.952 103.379 559.557 107.806 553.828 111.191C548.132 114.544 541.735 116.221 534.639 116.221C527.998 116.221 521.927 114.74 516.426 111.777C510.957 108.783 506.644 104.665 503.486 99.4238ZM575.85 115V65H591.523V70.3223C594.714 66.2533 598.913 64.2188 604.121 64.2188C605.911 64.2188 607.555 64.4792 609.053 65V80.1855H604.951C601.012 80.1855 598.034 81.1296 596.016 83.0176C594.03 84.9056 593.037 87.9655 593.037 92.1973V115H575.85ZM614.375 47.3242C614.375 44.4271 615.384 42.002 617.402 40.0488C619.453 38.0957 621.943 37.1191 624.873 37.1191C627.803 37.1191 630.293 38.112 632.344 40.0977C634.427 42.0508 635.469 44.4596 635.469 47.3242C635.469 50.1562 634.427 52.5488 632.344 54.502C630.293 56.4225 627.803 57.3828 624.873 57.3828C621.943 57.3828 619.453 56.4225 617.402 54.502C615.384 52.5488 614.375 50.1562 614.375 47.3242ZM616.377 115V65H633.564V115H616.377ZM648.994 108.896C644.502 104.014 642.256 97.7474 642.256 90.0977C642.256 82.4479 644.502 76.1491 648.994 71.2012C653.519 66.2533 659.281 63.7793 666.279 63.7793C671.52 63.7793 675.785 65.3255 679.072 68.418V40H696.26V115H680.586V109.824C677.461 114.089 672.692 116.221 666.279 116.221C659.281 116.221 653.519 113.779 648.994 108.896ZM662.764 82.2363C660.843 84.0918 659.883 86.6797 659.883 90C659.883 93.3203 660.843 95.9245 662.764 97.8125C664.684 99.668 666.995 100.596 669.697 100.596C672.334 100.596 674.596 99.7005 676.484 97.9102C678.405 96.1198 679.365 93.5156 679.365 90.0977C679.365 86.7122 678.405 84.0918 676.484 82.2363C674.596 80.3483 672.334 79.4043 669.697 79.4043C667.028 79.4043 664.717 80.3483 662.764 82.2363Z"
+                                            fill="#121033" />
+                                        <defs>
+                                            <clipPath id="clip0">
+                                                <rect width="169.29" height="168.66" fill="white" />
+                                            </clipPath>
+                                        </defs>
+                                    </svg>
+
                                 </a>
                                 <div class="-mr-2 flex items-center md:hidden">
-                                    <button @click="isMenuOpen = true" type="button" class="bg-gray-50 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+                                    <button @click="isMenuOpen = true" type="button"
+                                        class="bg-gray-50 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
                                         aria-expanded="false">
                                         <span class="sr-only">Open main menu</span>
                                         <!-- Heroicon name: outline/menu -->
@@ -83,17 +120,16 @@
                     </nav>
                 </div>
 
-                <div class="absolute top-0 inset-x-0 p-2 transition transform origin-top-right md:hidden" x-show="isMenuOpen"
-                x-transition:enter="duration-150 ease-out"
-                x-transition:enter-start="opacity-0 scale-95"
-                x-transition:enter-end="opacity-100 scale-100"
-                x-transition:leave="duration-100 ease-in"
-                x-transition:leave-start="opacity-100 scale-100"
-                x-transition:leave-end="opacity-0 scale-95">
+                <div class="absolute top-0 inset-x-0 p-2 transition transform origin-top-right md:hidden"
+                    x-show="isMenuOpen" x-transition:enter="duration-150 ease-out"
+                    x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                    x-transition:leave="duration-100 ease-in" x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:leave-end="opacity-0 scale-95">
                     <div class="rounded-lg shadow-md bg-white ring-1 ring-black ring-opacity-5 overflow-hidden">
                         <div class="px-5 pt-4 flex items-center justify-between">
                             <div>
-                                <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="">
+                                <img class="h-8 w-auto"
+                                    src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="">
                             </div>
                             <div class="-mr-2">
                                 <button type="button" @click="isMenuOpen = !isMenuOpen"
@@ -134,7 +170,8 @@
                         <span id="typewriter" class="block text-indigo-600 xl:inline"></span>
                     </h1>
                     <p class="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-                        DonorGrid is a ready-to-use headless donor management system that helps nonprofits to maximize their fundraising potential.</p>
+                        DonorGrid is a ready-to-use headless donor management system that helps nonprofits to maximize
+                        their fundraising potential.</p>
                     <div class="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
                         <div class="rounded-md shadow">
                             <a href="#"
@@ -514,8 +551,10 @@
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <div class="py-8 lg:flex lg:items-center lg:justify-between xl:mt-0">
                 <div>
-                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Subscribe to our newsletter</h3>
-                    <p class="mt-2 text-base text-gray-500">The latest news, articles, and resources, sent to your inbox weekly.</p>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Subscribe to our newsletter
+                    </h3>
+                    <p class="mt-2 text-base text-gray-500">The latest news, articles, and resources, sent to your inbox
+                        weekly.</p>
                 </div>
                 <form class="mt-4 sm:flex sm:max-w-md lg:mt-0">
                     <label for="email-address" class="sr-only">Email address</label>
@@ -533,7 +572,7 @@
             <div class="border-t border-gray-200 pt-8  md:flex md:items-center md:justify-between">
                 <div class="flex justify-center space-x-6 md:order-2">
 
-                    <a href="#" class="text-gray-400 hover:text-gray-500">
+                    <a href="https://twitter.com/tbhaxor" class="text-gray-400 hover:text-gray-500">
                         <span class="sr-only">Twitter</span>
                         <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path
@@ -541,7 +580,7 @@
                         </svg>
                     </a>
 
-                    <a href="#" class="text-gray-400 hover:text-gray-500">
+                    <a href="https://github.com/tbhaxor" class="text-gray-400 hover:text-gray-500">
                         <span class="sr-only">GitHub</span>
                         <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path fill-rule="evenodd"
@@ -551,8 +590,7 @@
                     </a>
                 </div>
                 <div class="mt-8 md:mt-0 md:order-1">
-                    <p class="text-center text-base text-gray-400">
-                        &copy; 2020 Workflow, Inc. All rights reserved.
+                    <p class="text-center text-base text-gray-400">Released under the <a href="https://github.com/donorgrid/DonorGrid/blob/main/LICENSE" target="_blank">MIT License</a>. Copyright &copy; 2021-2022 <a href="https://tbhaxor.com">Gurkirat Singh</a>.
                     </p>
                 </div>
             </div>
@@ -562,7 +600,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/2.3.0/alpine.js" defer></script>
     <script defer src="https://unpkg.com/typewriter-effect@latest/dist/core.js" defer></script>
     <script defer>
-        $(document).ready(function() {
+        $(document).ready(function () {
             new Typewriter("#typewriter", {
                 strings: ["instantly.", "globally.", "securely."],
                 autoStart: true,
