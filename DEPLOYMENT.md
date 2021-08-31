@@ -28,6 +28,7 @@ To deploy on the docker you must have following requirements
 1. docker runtime
 2. docker compose
 
+
 The steps of deployment are as follows
 
 1. Clone the repository on your server
