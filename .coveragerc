@@ -1,2 +1,7 @@
 [coverage:run]
-omit=*/site-packages/*,*/tests/*,*/.eggs/*
+omit=
+    */site-packages/*
+    */tests/*
+    */.eggs/*
+    Callback/*
+    Webhook/*

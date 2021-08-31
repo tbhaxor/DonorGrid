@@ -11,7 +11,7 @@ The application let you choose what your postgres connection, and the app level 
 |Env Name|Default|Description
 |:---:|:---:|:---|
 |SECRET|_random string created on runtime_|The django's secret value|
-|PY_ENV|prod|The details of |
+|PY_ENV|prod|This is application environment. Use `dev` for testing|
 |DB_NAME|donorgrid|Name of the database|
 |DB_HOST|db|Host name of the database server|
 |DB_CONN_AGE|None|The lifetime of a database connection|
@@ -28,32 +28,21 @@ To deploy on the docker you must have following requirements
 1. docker runtime
 2. docker compose
 
+
 The steps of deployment are as follows
 
 1. Clone the repository on your server
 
     ```shell
-    git clone https://github.com/donorgrid/DonorGrid
+    git clone https://github.com/donorgrid/DonorGrid && cd DonorGrid
     ```
-
-2. Rename _nginx.conf.example_ to _nginx.conf_ and configure `server_name` in it
-   ```diff
-   - server_name _;
-   + server_name donation.site.com;
-   ```
    
-3. Install the certificates
-   ```shell
-   docker-compose up
-   ```
-   
-   **Note** The nginx is failing unexpectedly when you add the certificate. This will be fixed in future updates
-
-4. Kill the containers by pressing CTRL+C twice
-5. Restart the application
+2. Start the application
    ```shell
    docker-compose up -d
    ```
+
+3. Proxy pass http://127.0.0.1:8000 via nginx or apache server with ssl certificates as per your needs. 
 
 ### Configuring initial superuser configuration
 
@@ -67,6 +56,8 @@ By default, it will create superuser for admin panel with **donorgrid:donorgrid*
 
 ## Manual Deployment
 
+In case you want to set up your own docker deployment, you can pull official docker images from here &rArr; https://hub.docker.com/r/tbhaxor/donorgrid
+
 You must have following dependencies fulfilled
 
 1. git
@@ -74,6 +65,7 @@ You must have following dependencies fulfilled
 3. pip >= 21
 4. postgresql 13.x
 5. ubuntu / debian
+6. docker runtime (optional)
 
 The steps of deployment are as follows
 
@@ -88,17 +80,23 @@ The steps of deployment are as follows
    ```
 
 3. Configure your environment variables as described above and add export them in your .bashrc file
-4. Run DB migrations
+   
+4. Source .bashrc file
+   ```shell
+   source ~/.bashrc
+   ```
+   
+5. Run DB migrations
    ```shell
    cd /opt/donorgrid && python manage.py migrate
    ```
    
    **Note** The command will only fail in case of wrong DB configurations
-5. Create a super user for the application
+6. Create a super user for the application
    ```shell
    python manage.py createsuperuser
    ```
    
    **Note** This should be done for the first time only
    
-6. Configure app with uwsgi and serve it with apache or nginx (your choice)
+7. Configure app with uwsgi and serve it with apache or nginx (your choice)

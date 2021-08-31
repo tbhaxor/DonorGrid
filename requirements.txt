@@ -14,7 +14,6 @@ django-flat-responsive==2.0
 django-flat-theme==1.1.4
 django-js-asset==1.2.2
 Faker==8.10.1
-gunicorn==20.1.0
 idna==2.10
 paypalrestsdk==1.13.1
 psycopg2==2.9.1
