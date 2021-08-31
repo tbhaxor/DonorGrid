@@ -56,6 +56,8 @@ By default, it will create superuser for admin panel with **donorgrid:donorgrid*
 
 ## Manual Deployment
 
+In case you want to set up your own docker deployment, you can pull official docker images from here &rArr; https://hub.docker.com/r/tbhaxor/donorgrid
+
 You must have following dependencies fulfilled
 
 1. git
@@ -63,6 +65,7 @@ You must have following dependencies fulfilled
 3. pip >= 21
 4. postgresql 13.x
 5. ubuntu / debian
+6. docker runtime (optional)
 
 The steps of deployment are as follows
 
