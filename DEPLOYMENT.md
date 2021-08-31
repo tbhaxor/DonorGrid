@@ -80,17 +80,23 @@ The steps of deployment are as follows
    ```
 
 3. Configure your environment variables as described above and add export them in your .bashrc file
-4. Run DB migrations
+   
+4. Source .bashrc file
+   ```shell
+   source ~/.bashrc
+   ```
+   
+5. Run DB migrations
    ```shell
    cd /opt/donorgrid && python manage.py migrate
    ```
    
    **Note** The command will only fail in case of wrong DB configurations
-5. Create a super user for the application
+6. Create a super user for the application
    ```shell
    python manage.py createsuperuser
    ```
    
    **Note** This should be done for the first time only
    
-6. Configure app with uwsgi and serve it with apache or nginx (your choice)
+7. Configure app with uwsgi and serve it with apache or nginx (your choice)
