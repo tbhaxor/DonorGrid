@@ -10,8 +10,7 @@ services:
       - uploads:/var/www/html/uploads
       - ./nginx.conf:/etc/nginx/nginx.conf
     ports:
-      - 80:80
-      - 443:443
+      - 127.0.0.1:8000:80
   app:
     depends_on:
       - db
