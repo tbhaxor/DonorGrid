@@ -11,7 +11,7 @@ The application let you choose what your postgres connection, and the app level 
 |Env Name|Default|Description
 |:---:|:---:|:---|
 |SECRET|_random string created on runtime_|The django's secret value|
-|PY_ENV|prod|The details of |
+|PY_ENV|prod|This is application environment. Use `dev` for testing|
 |DB_NAME|donorgrid|Name of the database|
 |DB_HOST|db|Host name of the database server|
 |DB_CONN_AGE|None|The lifetime of a database connection|
