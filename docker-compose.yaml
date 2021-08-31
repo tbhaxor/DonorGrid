@@ -9,7 +9,6 @@ services:
       - static:/var/www/html
       - uploads:/var/www/html/uploads
       - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx.ssl.sh:/docker-entrypoint.d/40-enable-ssl.sh
     ports:
       - 80:80
       - 443:443
