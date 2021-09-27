@@ -43,7 +43,7 @@ DonorGrid is licensed under [MIT License](https://github.com/donorgrid/DonorGrid
 
 ## Contribution
 
-Currently, this project in alpha phase. I am not accepting any pull requests
+Glad to see you are interested in improving this repository. Please read the contributing guidelines [here](https://github.com/tbhaxor/DonorGrid/blob/main/CONTRIBUTING.md)
 
 ## Contact Information
 
