@@ -4,6 +4,7 @@ We follow the coding convention strictly and expect the same from you. Here are 
 
 1. If you want to add a new feature, create its app
 2. Prefer single quotes only, use escape character.
+3. Snake casing (`name_of_the_function`) in function name but kebab casing (`my-webhook`) for url paths 
 
 
 ## Scope of Contribution
