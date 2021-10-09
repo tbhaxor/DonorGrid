@@ -3,7 +3,7 @@ certifi==2021.5.30
 cffi==1.14.5
 chardet==4.0.0
 coverage==5.5
-cryptography==3.4.7
+cryptography==35.0.0
 Django==3.2.5
 django-admin-interface==0.16.3
 django-ckeditor==6.1.0
