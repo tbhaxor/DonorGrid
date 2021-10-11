@@ -5,7 +5,7 @@ chardet==4.0.0
 charset-normalizer==2.0.6
 coverage==5.5
 cryptography==35.0.0
-Django==3.2.5
+Django==3.2.8
 django-admin-interface==0.16.3
 django-ckeditor==6.1.0
 django-colorfield==0.4.4
