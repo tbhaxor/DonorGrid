@@ -14,9 +14,3 @@ services:
       POSTGRES_PASSWORD: donorgrid
       POSTGRES_DB: donorgrid
       POSTGRES_USER: donorgrid
-
-volumes:
-  static:
-    driver: local
-  uploads:
-    driver: local
