@@ -2,6 +2,7 @@ asgiref==3.4.0
 certifi==2021.5.30
 cffi==1.14.6
 chardet==4.0.0
+charset-normalizer==2.0.6
 coverage==5.5
 cryptography==35.0.0
 Django==3.2.5
@@ -14,6 +15,7 @@ django-flat-responsive==2.0
 django-flat-theme==1.1.4
 django-js-asset==1.2.2
 Faker==8.10.1
+gunicorn==20.1.0
 idna==2.10
 paypalrestsdk==1.13.1
 psycopg2==2.9.1
