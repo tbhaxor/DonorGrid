@@ -3,7 +3,7 @@ certifi==2021.5.30
 cffi==1.14.6
 chardet==4.0.0
 charset-normalizer==2.0.6
-coverage==5.5
+coverage==6.0.1
 cryptography==35.0.0
 Django==3.2.8
 django-admin-interface==0.16.3
@@ -16,13 +16,13 @@ django-flat-theme==1.1.4
 django-js-asset==1.2.2
 Faker==8.10.1
 gunicorn==20.1.0
-idna==2.10
+idna==3.2
 paypalrestsdk==1.13.1
 psycopg2==2.9.1
 pycparser==2.20
 pyOpenSSL==21.0.0
 python-dateutil==2.8.2
-pytz==2021.1
+pytz==2021.3
 PyYAML==5.4.1
 razorpay==1.2.0
 requests==2.26.0
