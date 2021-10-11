@@ -5,9 +5,13 @@ services:
     depends_on:
       - db
     build: .
+    ports:
+      - "127.0.0.1:5000:5000"
     volumes:
-      - static:/app/static
-      - uploads:/app/uploads
+      - /var/www/html/donorgrid/static:/app/static
+      - /var/www/html/donorgrid/uploads:/app/uploads
+      - /var/log/donorgrid:/var/log/donorgrid
+    restart: on-failure
   db:
     image: postgres:alpine
     environment:
