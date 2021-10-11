@@ -32,17 +32,19 @@ To deploy on the docker you must have following requirements
 The steps of deployment are as follows
 
 1. Clone the repository on your server
-
     ```shell
-    git clone https://github.com/donorgrid/DonorGrid && cd DonorGrid
+    git clone https://github.com/tbhaxor/DonorGrid && cd DonorGrid
     ```
-   
-2. Start the application
+2. Build the services
+   ```shell
+   docker-compose build
+   ```
+4. Start the application
    ```shell
    docker-compose up -d
    ```
 
-3. Proxy pass http://127.0.0.1:8000 via nginx or apache server with ssl certificates as per your needs. 
+5. Proxy pass http://127.0.0.1:5000 via nginx or apache server with ssl certificates as per your needs. 
 
 ### Configuring initial superuser configuration
 
@@ -58,7 +60,7 @@ By default, it will create superuser for admin panel with **donorgrid:donorgrid*
 
 In case you want to set up your own docker deployment, you can pull official docker images from here &rArr; https://hub.docker.com/r/tbhaxor/donorgrid
 
-You must have following dependencies fulfilled
+You must have the following dependencies fulfilled
 
 1. git
 2. python >= 3.6 
@@ -72,11 +74,12 @@ The steps of deployment are as follows
 1. Clone the repository
    ```shell
    git clone https://github.com/donorgrid/DonorGrid.git /opt/donorgrid
+   cd /opt/donorgrid
    ```
    
 2. Install pip packages
    ```shell
-   pip install -r /opt/donorgrid/requirements.txt
+   pip install -r requirements.txt
    ```
 
 3. Configure your environment variables as described above and add export them in your .bashrc file
@@ -88,15 +91,15 @@ The steps of deployment are as follows
    
 5. Run DB migrations
    ```shell
-   cd /opt/donorgrid && python manage.py migrate
+   python manage.py migrate
    ```
    
    **Note** The command will only fail in case of wrong DB configurations
-6. Create a super user for the application
+6. Create a superuser for the application
    ```shell
    python manage.py createsuperuser
    ```
    
    **Note** This should be done for the first time only
    
-7. Configure app with uwsgi and serve it with apache or nginx (your choice)
+7. Configure app with uwsgi and serve it with apache or nginx (your choice) or use gunicorn to deploy `Donorgrid.wsgi:application`
