@@ -27,6 +27,7 @@ To deploy on the docker you must have following requirements
 
 1. docker runtime
 2. docker compose
+3. nginx
 
 
 The steps of deployment are as follows
@@ -39,12 +40,36 @@ The steps of deployment are as follows
    ```shell
    docker-compose build
    ```
-4. Start the application
+3. Start the application
    ```shell
    docker-compose up -d
    ```
+   
+   **Note** This will create the 3 bind mounts for static content, file uploads and webserver logs respectively.
+   You can change them [here](https://github.com/tbhaxor/DonorGrid/blob/main/docker-compose.yaml#L11-L13)
 
-5. Proxy pass http://127.0.0.1:5000 via nginx or apache server with ssl certificates as per your needs. 
+4. Proxy pass http://127.0.0.1:5000 via nginx server with ssl certificates as per your needs. 
+5. Serve the uploads and static content via nginx along with proxy pass.
+
+### Sample Vhost File (Nginx)
+```nginx configuration
+server {
+    listen 80;
+    server_name _;
+    
+    location /static  {
+        alias /var/www/html/donorgrid/static;
+    }
+
+    location /uploads {
+        alias /var/www/html/donorgrid/uploads;
+    }
+
+    location / {
+        proxy_pass http://localhost:5000;
+    }
+}
+   ```
 
 ### Configuring initial superuser configuration
 

@@ -2,6 +2,9 @@
 
 set -e
 
+echo "[!] Waiting for DB server to boot"
+sleep 10
+
 echo "[!] Running DB Migrations"
 python manage.py migrate
 

@@ -18,3 +18,8 @@ services:
       POSTGRES_PASSWORD: donorgrid
       POSTGRES_DB: donorgrid
       POSTGRES_USER: donorgrid
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
