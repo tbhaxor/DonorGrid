@@ -1,12 +1,10 @@
-# DonorGrid
-
-> Accept donations from around the globe instantly
+<img src="https://user-images.githubusercontent.com/6176598/138420333-4dcf1cd9-c3ad-41b0-8603-5c0540cc6eee.png" alt="DonorGrid - Accept donations from around the globe instantly" title="DonorGrid - Accept donations from around the globe instantly" width="250" />
 
 DonorGrid is a ready-to-use headless donor management system for NGOs and other similar organization provided for free. It can be used with literally any website and make it accept donation in no-time (of course integration time excluded).
 
 I have been inspired for this project from https://youwecan.org. It not only solves the problem for SMBs who take responsibility to build donation websites but also help the donors to donate money in their currencies.
 
-## Feature
+## 🔥 Features
 
 - [x] Ready to integrate APIs
 - [x] User friendly admin panel
@@ -27,7 +25,7 @@ I have been inspired for this project from https://youwecan.org. It not only sol
 - [ ] Translations and i18n
 - [ ] Crowdfunding
 
-## Get started now
+## 😎 Get started
 
 ### Deployment
 
@@ -37,15 +35,18 @@ Please refer to the deployment guide [here](https://github.com/donorgrid/DonorGr
 
 You can find the documentation [here](https://documenter.getpostman.com/view/11179382/TzmCfskJ)
 
-## License
+## ✨ Contributors
+
+![contributors](https://user-images.githubusercontent.com/6176598/138419786-8308026a-e62d-4756-9bb3-db29cee32af4.png)
+
+Interested in improving this repository? Please read the contributing guidelines [here](https://github.com/tbhaxor/DonorGrid/blob/main/CONTRIBUTING.md)
+
+## 🙋‍♂️ Need help?
+
+Have more questions, ideas, or looking for integration with your existing donation management system? 
+
+Send me an [email](mailto:tbhaxor@gmail.com) or [schedule a 30 minutes kickoff call](https://calendly.com/tbhaxor).
+
+## 📜 License
 
 DonorGrid is licensed under [MIT License](https://github.com/donorgrid/DonorGrid/blob/main/LICENSE)
-
-## Contribution
-
-Glad to see you are interested in improving this repository. Please read the contributing guidelines [here](https://github.com/tbhaxor/DonorGrid/blob/main/CONTRIBUTING.md)
-
-## Contact Information
-
-+ Email: tbhaxor@gmail.com
-+ Twitter: https://twitter.com/tbhaxor
