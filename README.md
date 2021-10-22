@@ -1,4 +1,7 @@
-<img src="https://user-images.githubusercontent.com/6176598/138420333-4dcf1cd9-c3ad-41b0-8603-5c0540cc6eee.png" alt="DonorGrid - Accept donations from around the globe instantly" title="DonorGrid - Accept donations from around the globe instantly" width="250" />
+<div style="text-align: center">
+  
+  <img src="https://user-images.githubusercontent.com/6176598/138420333-4dcf1cd9-c3ad-41b0-8603-5c0540cc6eee.png" alt="DonorGrid - Accept donations from around the globe instantly" title="DonorGrid - Accept donations from around the globe instantly" width="250" />
+</div>
 
 DonorGrid is a ready-to-use headless donor management system for NGOs and other similar organization provided for free. It can be used with literally any website and make it accept donation in no-time (of course integration time excluded).
 
