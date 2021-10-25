@@ -47,7 +47,7 @@ Interested in improving this repository? Please read the contributing guidelines
 
 Have more questions, ideas, or looking for integration with your existing donation management system? 
 
-Send me an [email](mailto:tbhaxor@gmail.com) or [schedule a 30 minutes kickoff call](https://calendly.com/tbhaxor).
+Send me an [email](mailto:tbhaxor@gmail.com), [schedule a 30 minutes kickoff call](https://calendly.com/tbhaxor), or join our [Telegram community](https://t.me/joinchat/uCbei-0NfXllYTg1).
 
 ## 📜 License
 
