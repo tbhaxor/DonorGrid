@@ -1,0 +1,319 @@
+## ------------
+## Obligatory metadata
+## ------------
+openapi: 3.0.0
+info:
+  version: 1.2.0
+  title: DonorGrid API
+  description: DonorGrid is a headless application to integrate with literally any website and make it accept donations from around the globe. This is the developer's integration guide explaining how you can use the APIs to start integration at your end. You can deploy donorgrid on your premise and use the base URL to call the following APIs. In this documentation, the base URL for the demo will be from the donorgrid demo website
+  contact:
+    url: https://github.com/tbhaxor/DonorGrid
+    email: tbhaxor@gmail.com
+  license:
+    name: MIT
+    url: https://github.com/tbhaxor/DonorGrid/blob/main/LICENSE
+
+servers:
+  - url: https://demo.donorgrid.io
+    description: DonorGrid demo server
+
+## -------------
+## Application Modules
+## -------------
+tags:
+  - name: configurations
+    description: Manage your site content easily like any other CMS
+  - name: packages
+    description: Create a predefined amount in certain currency for faster conversions
+  - name: donations
+    description:  Process payment from the input, create donation and store in the DB
+
+paths:
+  ## -------------------
+  ## Configuration Routes
+  ## -------------------
+  /configurations/payment-methods/:
+    get:
+      summary: Fetch active payment methods
+      tags: 
+        - configurations
+      description: Get the properties for active payment methods configured in the management panel to load and intantiate the client SDK's
+      responses:
+        200:
+          $ref: '#/components/responses/FetchPaymentMethods'
+  /configurations/custom-fields:
+    get:
+      summary: Fetch custom fields
+      description: Get the list of custom fields you want to show on your checkout page. This should be passed as base64 encoded JSON string as `custom_data` field while creating donation.
+      tags: 
+        - configurations
+      responses:
+        200:
+          $ref: '#/components/responses/FetchCustomFields'
+  
+  ## -------------------
+  ## Packages Routes
+  ## -------------------
+  /packages/:
+    get:
+      summary: Fetch predefined amount packages
+      tags:
+        - packages
+      description: Get list of all the packages containing predefined amounts to be paid by the donors in the certain currency for faster convesions.
+      responses:
+        200:
+          $ref: '#/components/responses/FetchPackages'
+  
+  ## -------------------
+  ## Donation Routes
+  ## -------------------
+  /donations/:
+    post:
+      summary: Create donation
+      description: Create donation on behalf of donor. This will store the donation in the DB and process payment using card details or redirections if required
+      tags:
+        - donations
+      requestBody:
+        $ref: '#/components/requestBodies/CreateDonation'
+      responses:
+        301:
+          $ref: '#/components/responses/DonationAuthorizeRedirect'
+        200:
+          $ref: '#/components/responses/DonationAccepted'
+
+
+components:
+  requestBodies:
+    CreateDonation:
+      content:
+        application/x-www-form-urlencoded:
+          schema:
+            $ref: '#/components/schemas/CreateDonation'
+            
+  schemas:
+    CreateDonation:
+      description: Request body payload for donations
+      type: object
+      properties:
+        package:
+          type: number
+          description: ID of the package to use. It should be provided if `amount` is not passed
+          example: 1
+        gateway:
+          type: string
+          enum:
+            - stripe
+            - paypal
+            - razorpay
+        first_name:
+          type: string
+          description: First name of the author
+          default: Anonymous
+        last_name:
+          type: string
+          description: Last name of the author
+          default: Donor
+        email:
+          type: string
+          format: email
+          description: Email of the donor
+        is_anonymous:
+          type: string
+          enum: 
+            - "yes"
+            - "no"
+          default: "no"
+          description: Whether to send future emails to the donor or not. To opt-out, set this value `yes`
+        phone_number:
+          type: string
+          description: Phone number of the donor. It should start with country code number, except that `+` sign
+        amount:
+          type: string
+          format: number
+          description: Amount of the donation. It should be passed when package is not specified
+        currency:
+          type: string
+          description: ISO code of currency. It should be passed with amount. Default currency is `USD`
+        token:
+          type: string
+          description: Token of to process payment. It should be the _payment method id_ in `stripe`, _payment id_ in case of `razorpay` and ignored in case of `paypal`
+        on_behalf_of: 
+          type: string
+          description: Name of the person or organization donating on behalf of.
+        note:
+          type: string
+          description: Additional note donor wants to add to the donation
+        custom_data:
+          type: string
+          description: Base64 encoded JSON string containing the keys as name of the custom field and values as the user input. In the backend if the key does not exist in Custom Field model (the name field), it will be omitted. <br><br> **Note** For custom fields, no input validation is implemented. You should handle it at your end.
+      required: 
+        - gateway
+        - email
+      example: 
+        gateway: stripe
+        
+    PackageList:
+      description: List of all the packages
+      type: array
+      items:
+        properties:
+          id:
+            type: number
+            description: ID of the object in the DB. It is required if you choose to use package while creating donation
+          name:
+            type: string
+            description: Display name of the package
+          description:
+            type: string
+            description: Description for donors to know more about how this donation will be used
+          amount:
+            type: string
+            description: Amount to be charged when donor will select this package ID
+          currency:
+            type: string
+            default: "USD"
+            description: ISO formatted currency code
+    CustomFieldList:
+      description: List of all the custom fields
+      type: array
+      items:
+        properties:
+          id:
+            type: number
+            description: ID of the object saved in DB
+            deprecated: true
+          name:
+            type: string
+            description: Unique name of the input element to be used as key in `custom_data`
+          placeholder:
+            type: string
+          attributes:
+            type: object
+            description: Extra HTML attributes for the tags. The `key` gives you attribute name and `value` gives you the value of that attribute
+          type:
+            type: string
+            enum:
+              - url
+              - date
+              - datetime-local
+              - time
+              - text
+              - email
+              - number
+            description: Type of value you want to recieve from input
+          help_text: 
+            type: string
+            description: Additional help text you want to show to the donors
+    PaymentMethodList:
+      type: array
+      description: List of all the payment method currently activated
+      items:
+        properties:
+          id:
+            type: number
+            deprecated: true
+            description: ID of the object saved in DB
+          provider:
+            type: string
+            enum:
+              - stripe
+              - paypal
+              - razorpay
+            description: Payment provider through with the money would converted and regulated to your account
+          client_key:
+            type: string
+            description: The client side or publishable key used to instantiate the client sdk. For example look for stripe.js sdk or razorpay web integration
+          environment:
+            type: string
+            enum: 
+              - dev
+              - prod
+            description: Environment in which current payment method is configured. The `dev` environment means it is testing mode where a sandbox account will be affective and `prod` means the production APIs are to be used to collect real payments
+  responses:
+    DonationAuthorizeRedirect:
+      description: It will be generated in case of stripe 3d verification redirection or paypal authorization
+      headers:
+        Location:
+          required: true
+          description: The URL you need to redirect to complete payment authorizations
+          schema:
+            type: string
+    DonationAccepted:
+      description: It will generate simple output related to whether donation is made or not. You will not get this response when PayPal is selected for processing payment
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                description: Whether the transaction succeeded or failed
+              message:
+                type: string
+                description: A message related to status. If the request is invalid or didn't complete, you will the reason here
+            example: 
+              success: true
+              message: Donation has been made
+              
+                
+    FetchPackages:
+      description: Successful response containing JSON array of objects
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PackageList'
+          example: 
+            - id: 1
+              name: Giver
+              description: This will let us provide mid-day meal in the schools
+              amount: '20.00'
+              currency: USD
+            - id: 2
+              name: Generous
+              description: This will let us provide free education to the kids
+              amount: '20.00'
+              currency: USD
+          
+    FetchCustomFields:
+      description: Successful response containing JSON array of objects
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CustomFieldList'
+          example: 
+            - id: 2
+              name: plan_of_action
+              placeholder: Enter your plan of action for the donation
+              attributes:
+                id: poa
+                class: md-2
+              type: text
+              help_text: We will take care that your donation is used for a specific plan
+            - id: 3
+              name: date_of_birth
+              placeholder: Your Age
+              attributes: null
+              type: date
+              help_text: Tell us your age so that we can send you warm wishes on your birthday
+            
+    FetchPaymentMethods:
+      description: Successful response containing JSON array of objects
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PaymentMethodList'
+          example: 
+            - id: 3
+              provider: stripe
+              client_key: stripe key here
+              environment: dev
+            - id: 4
+              provider: paypal
+              client_key: paypal key here
+              environment: dev
+            - id: 5
+              provider: razorpay
+              client_key: razorpay key here
+              environment: dev
+
+        
