@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>API Documentation</title>
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@3/swagger-ui.css"/>
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+            min-height: 100%;
+            min-width: 100%;
+            margin-left: 0;
+            padding-left: 0;
+            margin-top: 0;
+            padding-top: 0;
+        }
+
+        .full-hw {
+            height: 100%;
+            width: 100%;
+            min-height: 100%;
+            min-width: 100%;
+            margin-left: 0;
+            padding-left: 0;
+            margin-top: 0;
+            padding-top: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="docs" class="full-hw"></div>
+<script src="https://unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js" charset="UTF-8"></script>
+<script src="https://unpkg.com/swagger-ui-dist@3/swagger-ui-standalone-preset.js" charset="UTF-8"></script>
+<script>
+    window.ui = new SwaggerUIBundle({
+        url: location.origin + "/donorgrid.yaml",
+        dom_id: "#docs",
+        deepLinking: true,
+        presets: [
+            SwaggerUIBundle.presets.apis,
+            SwaggerUIStandalonePreset
+        ],
+        plugins: [
+            SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout"
+    })
+
+    document.addEventListener("DOMContentLoaded", function () {
+        let x = document.querySelector("form[class=download-url-wrapper]")
+        x.parentElement.removeChild(x)
+
+        let selected = false
+        const timer = setInterval(() => {
+            if (selected) {
+                clearInterval(timer)
+                return
+            }
+            x = document.querySelector("div > hgroup > a")
+            if (x) {
+                selected = true
+                x.parentElement.removeChild(x)
+            }
+        }, 500)
+    })
+</script>
+<script>
+    fetch("https://raw.githubusercontent.com/Amoenus/SwaggerDark/master/SwaggerDark.css").then(r => r.text()).then(css => {
+        const style = document.createElement("style")
+        style.textContent = css
+        document.head.appendChild(style)
+    })
+</script>
+</body>
+</html>
