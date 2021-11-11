@@ -80,6 +80,8 @@ paths:
           $ref: '#/components/responses/DonationAuthorizeRedirect'
         200:
           $ref: '#/components/responses/DonationAccepted'
+        400:
+          $ref: '#/components/responses/DonationInvalidPayload'
 
 
 components:
@@ -91,6 +93,16 @@ components:
             $ref: '#/components/schemas/CreateDonation'
             
   schemas:
+    DonationJSON:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the transaction succeeded or failed
+        message:
+          type: string
+          description: A message related to status. If the request is invalid or didn't complete, you will see the reason here
+        
     CreateDonation:
       description: Request body payload for donations
       type: object
@@ -230,6 +242,15 @@ components:
               - prod
             description: Environment in which current payment method is configured. The `dev` environment means it is testing mode where a sandbox account will be affective and `prod` means the production APIs are to be used to collect real payments
   responses:
+    DonationInvalidPayload:
+      description: It will be generated in case of invalid request payload sent to the backend
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DonationJSON'
+          example: 
+            success: false
+            message: "Gateway not found"
     DonationAuthorizeRedirect:
       description: It will be generated in case of stripe 3d verification redirection or paypal authorization
       headers:
@@ -251,15 +272,9 @@ components:
               message:
                 type: string
                 description: A message related to status. If the request is invalid or didn't complete, you will the reason here
-          examples:
-            Successful Donation:
-              value:
-                success: true
-                message: Donation has been made
-            Invalid Input:
-              value:
-                success: false
-                message: Gateway not found
+          example:
+            success: true
+            message: Donation has been made
               
                 
     FetchPackages:
