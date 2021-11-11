@@ -251,9 +251,15 @@ components:
               message:
                 type: string
                 description: A message related to status. If the request is invalid or didn't complete, you will the reason here
-            example: 
-              success: true
-              message: Donation has been made
+          examples:
+            Successful Donation:
+              value:
+                success: true
+                message: Donation has been made
+            Invalid Input:
+              value:
+                success: false
+                message: Gateway not found
               
                 
     FetchPackages:
