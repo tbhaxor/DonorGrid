@@ -23,15 +23,15 @@ def create_donation(request: HttpRequest):
         return HttpResponseNotAllowed(permitted_methods=['POST'])
 
     if request.POST.get('package', None) is None and float(request.POST.get('amount', 0)) <= 0:
-        return HttpResponseForbidden({'success': False, 'message': 'Amount or package id is required'})
+        return JsonResponse({'success': False, 'message': 'Amount or package id is required'}, status=400)
     package: Package = Package.objects.filter(id=request.POST.get('package', -1)).first()
 
     payment_method: PaymentMethod = PaymentMethod.objects.filter(is_active=True, provider=request.POST.get('gateway', None)).first()
     if payment_method is None:
-        return JsonResponse({'success': False, 'message': 'Gateway not found'})
+        return JsonResponse({'success': False, 'message': 'Gateway not found'}, status=400)
 
     if package is None and float(request.POST.get('amount', 0)) <= 0:
-        return JsonResponse({'success': False, 'message': 'Package %s not found' % request.POST['package']})
+        return JsonResponse({'success': False, 'message': 'Package %s not found' % request.POST['package']}, status=400)
 
     donor, is_created = Donor.objects.get_or_create(email=request.POST.get('email', None), defaults={
         'first_name': request.POST.get('first_name', None),
