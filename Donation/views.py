@@ -1,9 +1,11 @@
 import json
-from django.http import JsonResponse, HttpRequest, HttpResponseForbidden, HttpResponsePermanentRedirect, HttpResponseNotAllowed
+from django.db.models.aggregates import Sum
+from django.http import JsonResponse, HttpRequest, HttpResponsePermanentRedirect, HttpResponseNotAllowed
 from django.views.decorators.csrf import csrf_exempt
 from .models import Donor, Donation, Package
 from Configuration.models import PaymentMethod, CustomField, SMTPServer, Automation
 from Configuration.utils import send_email, send_webhook_event
+from CrowdFunding.models import Funding
 from django.conf import settings
 from django.urls import reverse
 from paypalrestsdk.payments import Payment
@@ -19,12 +21,17 @@ from base64 import b64decode
 
 @csrf_exempt
 def create_donation(request: HttpRequest):
-    if request.method == 'GET':
+    if request.method != 'POST':
         return HttpResponseNotAllowed(permitted_methods=['POST'])
 
     if request.POST.get('package', None) is None and float(request.POST.get('amount', 0)) <= 0:
         return JsonResponse({'success': False, 'message': 'Amount or package id is required'}, status=400)
-    package: Package = Package.objects.filter(id=request.POST.get('package', -1)).first()
+    try:
+        package_id = request.POST.get('package', -1)
+        package_id = int(package_id)
+    except ValueError:
+        package_id = 0
+    package: Package = Package.objects.filter(id=package_id).first()
 
     payment_method: PaymentMethod = PaymentMethod.objects.filter(is_active=True, provider=request.POST.get('gateway', None)).first()
     if payment_method is None:
@@ -51,16 +58,29 @@ def create_donation(request: HttpRequest):
 
     donation = Donation(donor=donor, package=package, on_behalf_of=request.POST.get('on_behalf_of', ''), note=request.POST.get('note', ''),
                         custom_data=custom_fields)
+
+    funding = Funding.objects.filter(id=request.POST.get('funding', -1)).first()
+    if request.POST.get('funding', -1) != -1 and not funding:
+        return JsonResponse({
+            'success': False,
+            'message': f'Invalid funding ID {request.POST["funding"]} passed'
+        })
+
     if is_created:
         send_webhook_event(Automation.EventChoice.ON_DONOR_CREATE, donation=donation)
 
-    if package is None:
-        donation.currency = request.POST.get('currency', 'USD')
-        donation.amount = float(request.POST['amount'])
-        pass
-    else:
-        donation.currency = package.currency
-        donation.amount = package.amount
+    donation.funding = funding
+    donation.currency = package and package.currency or funding and 'USD' or request.POST.get('currency', 'USD')
+    donation.amount = package and package.amount or float(request.POST['amount'])
+
+    if funding:
+        total_sum = funding.donations.all().aggregate(Sum('amount'))
+        total_sum = total_sum['amount__sum'] or 0
+        if donation.amount + total_sum > funding.target:
+            return JsonResponse({
+                'success': False,
+                'message': f'Donation amount exceeded funding target.'
+            })
         pass
 
     donation.save()
@@ -89,7 +109,7 @@ def create_donation(request: HttpRequest):
                     'item_list': {
                         'items': [
                             {
-                                'name': package.name if package else 'Custom Amount',
+                                'name': package and package.name or funding and funding.title or 'Custom Amount',
                                 'price': str(donation.amount),
                                 'currency': donation.currency,
                                 'quantity': 1
@@ -165,7 +185,8 @@ def create_donation(request: HttpRequest):
             if token is None:
                 donation.delete()
                 return JsonResponse(data={'success': False, 'message': 'Payment method token required'})
-            client: RZPayment = Client(auth=(payment_method.client_key, payment_method.secret_key)).payment
+            client = Client(auth=(payment_method.client_key, payment_method.secret_key))
+            client: RZPayment = client.payment
             rz_payment: dict = client.fetch(token)
             if rz_payment.get('status') != 'authorized':
                 donation.delete()
