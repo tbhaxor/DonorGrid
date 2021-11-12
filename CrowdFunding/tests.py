@@ -156,7 +156,7 @@ class CrowdFundingTest(TestCase):
         new_obj = Funding.objects.get(id=obj.id)
         self.assertNotEqual(new_obj.name, obj.name)
         self.assertNotEqual(new_obj.description, obj.description)
-        self.assertNotEqual(new_obj.status, obj.status)
+        self.assertNotEqual(new_obj.status.__str__(), obj.status.__str__())
         self.assertNotEqual(new_obj.target, obj.target)
         pass
 
