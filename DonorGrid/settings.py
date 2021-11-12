@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_extensions',
     'Configuration.apps.ConfigurationConfig',
+    'CrowdFunding.apps.CrowdfundingConfig',
     'Package.apps.PackageConfig',
     'Donation.apps.DonationConfig',
     'Donor.apps.DonorConfig',
