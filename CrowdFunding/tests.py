@@ -1,12 +1,11 @@
 from django.test import TestCase, Client
-from django.test.utils import ContextList
 from django.contrib.auth.models import User
 from django.contrib.admin.helpers import AdminErrorList
 from django.shortcuts import reverse
 from .models import Funding
 from faker import Faker
 from faker.providers import internet, profile, python, currency, lorem
-from time import time
+from time import time, sleep
 
 
 # Create your tests here.
@@ -142,10 +141,9 @@ class CrowdFundingTest(TestCase):
         description = self.fake.paragraph()
         target = self.fake.pyfloat(positive=True, left_digits=3, right_digits=2)
         if obj.status == Funding.Status.ACTIVE:
-            obj.status = Funding.Status.INACTIVE
+            status = Funding.Status.INACTIVE
         else:
-            obj.status = Funding.Status.ACTIVE
-        status = self.fake.random.choice([*map(lambda x: x[0], Funding.Status.choices)])
+            status = Funding.Status.ACTIVE
 
         self.client.post(reverse('admin:CrowdFunding_funding_change', kwargs={'object_id': obj.id}),
                          data={'name': name,
