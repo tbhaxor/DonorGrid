@@ -147,14 +147,16 @@ def create_donation(request: HttpRequest):
                 donation.save()
                 send_email(donation.donor.email,
                            SMTPServer.EventChoices.ON_PAYMENT_FAIL if not donation.is_completed else SMTPServer.EventChoices.ON_PAYMENT_SUCCESS)
-                send_webhook_event(
-                    SMTPServer.EventChoices.ON_PAYMENT_FAIL if not donation.is_completed else SMTPServer.EventChoices.ON_PAYMENT_SUCCESS, donor=donor,
-                    donation=donation, package=package,
-                    fail_reason=stripe_payment.get('last_payment_error').get('message') if not donation.is_completed else None)
+
+                if not donation.is_completed:
+                    last_error = stripe_payment.get('last_payment_error', {})
+                    message = last_error.get('message', 'Something went wrong. Stripe payment set to %s' % stripe_payment['status'])
+                    send_webhook_event(Automation.EventChoice.ON_PAYMENT_FAIL, donation=donation, fail_reason=message)
+                    return JsonResponse({'success': False, 'message': message})
         except (StripeError, CardError, InvalidRequestError) as e:
             donation.delete()
             send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_FAIL)
-            send_webhook_event(SMTPServer.EventChoices.ON_PAYMENT_FAIL, donor=donor, donation=donation, package=package, fail_reason=e)
+            send_webhook_event(Automation.EventChoice.ON_PAYMENT_FAIL, donation=donation, fail_reason=e)
             return JsonResponse(data={'success': False, 'message': e.user_message})
         pass
     else:
@@ -168,6 +170,7 @@ def create_donation(request: HttpRequest):
             if rz_payment.get('status') != 'authorized':
                 donation.delete()
                 send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_FAIL)
+                send_webhook_event(Automation.EventChoice.ON_PAYMENT_FAIL, donation=donation, fail_reason='Unprocessable payment token passed')
                 return JsonResponse(data={'success': False, 'message': 'Unprocessable payment token passed'})
 
             client.capture(token, rz_payment.get('amount'), {'currency': rz_payment.get('currency')})
@@ -175,7 +178,6 @@ def create_donation(request: HttpRequest):
             donation.is_completed = True
             donation.save()
             send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_SUCCESS)
-            send_webhook_event(SMTPServer.EventChoices.ON_PAYMENT_SUCCESS, donation=donation)
         except BadRequestError as e:
             donation.delete()
             send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_FAIL)
@@ -183,4 +185,5 @@ def create_donation(request: HttpRequest):
             return JsonResponse(data={'success': False, 'message': e.args[0]})
 
     send_email(donation.donor.email, SMTPServer.EventChoices.ON_PAYMENT_SUCCESS)
+    send_webhook_event(Automation.EventChoice.ON_PAYMENT_SUCCESS, donation=donation)
     return JsonResponse(data={'success': True, 'message': 'Donation has been made'})
