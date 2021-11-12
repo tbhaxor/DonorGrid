@@ -7,11 +7,10 @@ on:
 
 jobs:
   testing:
-    name: Python v${{ matrix.python }} - OS ${{ matrix.os.name }}
+    name: Python v3.9 - OS ${{ matrix.os.name }}
     runs-on: ${{ matrix.os.id }}
     strategy:
       matrix:
-        python: [3.6, 3.7, 3.8, 3.9]
         os:
           - name: Ubuntu Focal
             id: ubuntu-20.04
@@ -22,14 +21,8 @@ jobs:
         name: Clone repository
       - uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python }}
+          python-version: 3.9
         name: Install python
-      - uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
       - run: pip install -r requirements.txt
         name: Install pip requirements
       - run: python manage.py check
