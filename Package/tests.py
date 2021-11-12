@@ -170,17 +170,6 @@ class PackageCRUD(TestCase):
 
         errors = functools.reduce(operator.iconcat, ctx.get('errors').data)
         self.assertIn('This field is required.', errors)
-
-        r = self.client.post(reverse('admin:Package_package_add'), data={
-            'name': self.name,
-            'description': self.description,
-            'amount': round(self.amount, 2),
-            'currency': self.curr,
-        }, follow=False)
-
-        sleep(1)
-
-        self.assertIsNone(r.context, 'Correct data causing error')
         pass
 
     def testFailRecurring(self):
