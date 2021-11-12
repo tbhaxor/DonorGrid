@@ -15,8 +15,7 @@ class Funding(models.Model):
     description = RichTextField(max_length=256, null=False, blank=False, default=None, verbose_name='Description',
                                 help_text='Let donors know more about the campaign')
     target = models.FloatField(validators=[MinValueValidator(1.0, message='Target should be at least 1.0')], null=False, default=1.0, blank=False,
-                               help_text='Enter the target amount of the funding. If not deactivated, it will automatically deactive once the '
-                                         'donation read its limit')
+                               help_text='Enter the target amount of the funding')
     status = models.CharField(max_length=25, default=Status.ACTIVE, null=False, blank=False, verbose_name="Current Status",
                               help_text="Current status of the funding. Only active fundings can request for donations from the users",
                               choices=Status.choices)
