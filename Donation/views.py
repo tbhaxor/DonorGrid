@@ -110,7 +110,8 @@ def create_donation(request: HttpRequest):
             if 'details' in paypal_payment.error:
                 message = paypal_payment.error['details'][0]['issue']
             donation.delete()
-            return JsonResponse(data={'success': False, 'message': message})
+            send_webhook_event(Automation.EventChoice.ON_PAYMENT_FAIL, donation=donation, fail_reason=message)
+            return JsonResponse({'success': False, 'message': message})
         donation.txn_id = paypal_payment.id
         donation.save()
         redirect_url = [*filter(lambda x: x['rel'] == 'approval_url', paypal_payment.links)][0]['href']
@@ -120,7 +121,7 @@ def create_donation(request: HttpRequest):
             token = request.POST.get('token', None)
             if token is None:
                 donation.delete()
-                return JsonResponse(data={'success': False, 'message': 'Payment method token required'})
+                return JsonResponse({'success': False, 'message': 'Payment method token required'})
 
             stripe_payment = PaymentIntent.create(api_key=payment_method.secret_key,
                                                   amount=int(donation.amount * 100),
