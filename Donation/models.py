@@ -2,6 +2,8 @@ from django.db import models
 from Donor.models import Donor
 from Package.models import Package
 from Configuration.models import PaymentMethod
+from CrowdFunding.models import Funding
+from django.core.validators import MinValueValidator
 
 
 # Create your models here.
@@ -17,8 +19,10 @@ class Donation(models.Model):
     on_behalf_of = models.CharField(max_length=256, null=True, default='', blank=True)
     note = models.CharField(max_length=1024, null=True, default='', blank=True)
     custom_data = models.JSONField(null=True, blank=True)
+    funding = models.ForeignKey(Funding, on_delete=models.SET_NULL, null=True, related_name='donations')
 
     class Meta:
         verbose_name = 'Donation'
         verbose_name_plural = 'Donations'
+
     pass
