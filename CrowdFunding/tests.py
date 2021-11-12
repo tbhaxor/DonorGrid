@@ -153,10 +153,11 @@ class CrowdFundingTest(TestCase):
                                'target': target,
                                'status': status},
                          follow=True)
-        self.assertNotEqual(name, obj.name)
-        self.assertNotEqual(description, obj.description)
-        self.assertNotEqual(status, obj.status)
-        self.assertNotEqual(target, obj.target)
+        new_obj = Funding.objects.get(id=obj.id)
+        self.assertNotEqual(new_obj.name, obj.name)
+        self.assertNotEqual(new_obj.description, obj.description)
+        self.assertNotEqual(new_obj.status, obj.status)
+        self.assertNotEqual(new_obj.target, obj.target)
         pass
 
     def tearDown(self) -> None:
