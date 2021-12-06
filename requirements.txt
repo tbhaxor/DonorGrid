@@ -2,7 +2,7 @@ asgiref==3.4.1
 certifi==2021.10.8
 cffi==1.15.0
 chardet==4.0.0
-charset-normalizer==2.0.8
+charset-normalizer==2.0.9
 coverage==6.2
 cryptography==36.0.0
 Django==3.2.9
