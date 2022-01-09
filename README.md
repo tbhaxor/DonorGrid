@@ -16,6 +16,7 @@ I have been inspired for this project from https://youwecan.org. It not only sol
 - [x] Support three popular payment gateways: [Stripe](https://stripe.com), [PayPal](https://www.paypal.com/) and [RazorPay](https://razorpay.com)
 - [x] Custom fields
 - [x] Full admin panel whitelabel
+- [x] Crowdfunding
 - [ ] Integrations
   - [x] SMTP for sending emails
   - [x] Pabbly Connect
@@ -25,7 +26,6 @@ I have been inspired for this project from https://youwecan.org. It not only sol
 - [ ] Charts and analytics on admin panel
 - [ ] Hosted checkout page
 - [ ] Translations and i18n
-- [ ] Crowdfunding
 
 ## 😎 Get started
 
